@@ -1,0 +1,44 @@
+{
+  "certifications": [
+    {
+      "id": 1,
+      "title": "Gen AI",
+      "issuer": "Codebasics",
+      "date": "April 2023",
+      "image": "/images/certifications/Gen_AI.png",
+      "link": "https://codebasics.io/download-certificate-pdf/CB-90-541026"
+    },
+    {
+      "id": 2,
+      "title": "Deep Learning - Beginner to Advanced",
+      "issuer": "Codebasics",
+      "date": "April 2025",
+      "image": "/images/certifications/DL.png",
+      "link": "https://codebasics.io/download-certificate-pdf/CB-85-541026"
+    },
+    {
+      "id": 3,
+      "title": "Machine Learning Engineer for Data Science and AI",
+      "issuer": "Codebasics",
+      "date": "April 2025",
+      "image": "/images/certifications/ML.png",
+      "link": "https://codebasics.io/download-certificate-pdf/CB-69-541026"
+    },
+    {
+      "id": 4,
+      "title": "AZ900",
+      "issuer": "Microsoft",
+      "date": "June 2021",
+      "image": "/images/certifications/AZ900.png",
+      "link": "https://learn.microsoft.com/api/credentials/share/en-us/KasiMajji-6920/DEB4DE3B9CF155AD?sharingId=C673AE057EF42535"
+    },
+    {
+      "id": 5,
+      "title": "AZ104",
+      "issuer": "Microsoft",
+      "date": "March 2023",
+      "image": "/images/certifications/AZ104.png",
+      "link": "https://learn.microsoft.com/api/credentials/share/en-us/KasiMajji-6920/FC816FB0BB5E80F5?sharingId=C673AE057EF42535"
+    }
+  ]
+}

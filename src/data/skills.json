@@ -1,0 +1,13 @@
+{
+    "Skills": [
+      {
+        "Programming Languages": "Python, R, SQL",
+        "Machine Learning & AI": "Statistical ML, Deep Learning, NLP, Computer Vision, Generative AI",
+        "Data Visualization": "Matplotlib, Seaborn, Plotly, Power BI, Tableau",
+        "Data Engineering": "ETL Pipelines, Data Warehouse & Data Lake, Streaming Data, Data Modeling, Data Quality",
+        "Cloud": "AWS, GCP, Azure",
+        "Databases": "PostgreSQL, MySQL, MongoDB, Snowflake, Redis"    
+      }
+    ]
+}
+  
