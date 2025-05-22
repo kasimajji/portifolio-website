@@ -1,9 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaDownload } from 'react-icons/fa';
 
 const About = ({ profileData }) => {
+  // Function to highlight the first line and important words
+  const highlightContent = (text) => {
+    if (!text) return '';
+    
+    // Split the content by paragraphs
+    const paragraphs = text.split('\n\n');
+    
+    // Highlight the first line (title)
+    if (paragraphs.length > 0) {
+      paragraphs[0] = `<span class="highlight-title">${paragraphs[0]}</span>`;
+    }
+    
+    // Join paragraphs back with line breaks
+    let processedText = paragraphs.join('<br><br>');
+    
+    // Highlight important words
+    const importantWords = [
+      'Data Scientist', 'Machine Learning Engineer', 'Chicago', 'curiosity', 'passion', 
+      'exploring data', 'writing code', 'running models', 'insights', 
+      'Tata Consultancy Services', 'insurance data', "master's", 'Northern Illinois University',
+      'real-time AI', 'ML pipelines', 'cloud systems'
+    ];
+    
+    // Replace important words with highlighted versions
+    importantWords.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      processedText = processedText.replace(regex, match => `<span class="highlight-word">${match}</span>`);
+    });
+    
+    return processedText;
+  };
   return (
     <AboutSection id="about">
       <div className="container">
@@ -19,36 +49,61 @@ const About = ({ profileData }) => {
           </AboutVideoContainer>
           
           <AboutText>
-            <p dangerouslySetInnerHTML={{ __html: profileData?.aboutMe?.replace(/\n/g, '<br>') || '' }}></p>
-            <DownloadButton href={profileData?.resumeLink} target="_blank">
-              <FaDownload /> Download Resume
-            </DownloadButton>
+            <p dangerouslySetInnerHTML={{ __html: highlightContent(profileData?.aboutMe) }}></p>
           </AboutText>
         </AboutContent>
         
-        {/* Journey section with horizontal timeline */}
+        {/* Journey section with vertical timeline */}
         <JourneySection>
           <h3>My Journey</h3>
-          <HorizontalTimeline>
-            {profileData?.journey?.split('\n\n').map((item, index) => {
+          <VerticalTimeline>
+            {profileData?.journey?.split('\n\n').map((item, index, array) => {
               const parts = item.split('\n');
               const title = parts[0]; // Role/Position
               const dateRange = parts[1]; // Date range
               const company = parts[2]; // Company name
               const description = parts.slice(3).join('\n'); // Description
               
+              // Alternate left and right for the timeline items
+              const isEven = index % 2 === 0;
+              
               return (
-                <TimelineItem key={index}>
-                  <TimelineContent>
-                    <h4>{title}</h4>
-                    <div className="timeline-date">{dateRange}</div>
-                    <div className="timeline-company">{company}</div>
-                    <p className="timeline-description">{description}</p>
-                  </TimelineContent>
-                </TimelineItem>
+                <TimelineRow key={index} isLast={index === array.length - 1}>
+                  {isEven ? (
+                    <>
+                      <TimelineItemLeft>
+                        <TimelineContent>
+                          <h4>{title}</h4>
+                          <div className="timeline-date">{dateRange}</div>
+                          <div className="timeline-company">{company}</div>
+                          <p className="timeline-description">{description}</p>
+                        </TimelineContent>
+                      </TimelineItemLeft>
+                      <TimelineCenter>
+                        <TimelineDot />
+                      </TimelineCenter>
+                      <TimelineEmpty />
+                    </>
+                  ) : (
+                    <>
+                      <TimelineEmpty />
+                      <TimelineCenter>
+                        <TimelineDot />
+                      </TimelineCenter>
+                      <TimelineItemRight>
+                        <TimelineContent>
+                          <h4>{title}</h4>
+                          <div className="timeline-date">{dateRange}</div>
+                          <div className="timeline-company">{company}</div>
+                          <p className="timeline-description">{description}</p>
+                        </TimelineContent>
+                      </TimelineItemRight>
+                    </>
+                  )}
+                </TimelineRow>
               );
             })}
-          </HorizontalTimeline>
+          </VerticalTimeline>
         </JourneySection>
         
         {/* Two-column layout for What Drives Me and Beyond Work */}
@@ -94,6 +149,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 50px;
   position: relative;
   display: inline-block;
+  color: var(--text-color);
   
   &::after {
     content: '';
@@ -152,11 +208,26 @@ const AboutText = styled.div`
   max-width: 55%;
   text-align: left;
   padding-left: 20px;
+  color: var(--text-color);
   
   p {
     margin-bottom: 30px;
     font-size: 1rem;
     line-height: 1.8;
+    color: var(--text-color);
+  }
+  
+  .highlight-title {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 15px;
+  }
+  
+  .highlight-word {
+    color: var(--primary-color);
+    font-weight: 500;
   }
   
   @media (max-width: 992px) {
@@ -165,38 +236,19 @@ const AboutText = styled.div`
   }
 `;
 
-const DownloadButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 30px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: center;
-  font-size: 0.9rem;
-  background: var(--gradient-bg);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
-  }
-`;
+
 
 const JourneySection = styled.div`
   margin-top: 60px;
   margin-bottom: 70px;
+  color: var(--text-color);
   
   h3 {
     text-align: center;
     margin-bottom: 40px;
     font-size: 1.8rem;
     position: relative;
+    color: var(--text-color);
     
     &::after {
       content: '';
@@ -212,22 +264,81 @@ const JourneySection = styled.div`
   }
 `;
 
-const HorizontalTimeline = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 25px;
+const VerticalTimeline = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
   margin: 0 auto;
-  max-width: 100%;
   position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+  }
 `;
 
-const TimelineItem = styled.div`
+const TimelineRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  margin-bottom: ${props => props.isLast ? '0' : '30px'};
   position: relative;
-  padding: 0;
+  width: 100%;
+`;
+
+const TimelineItemLeft = styled.div`
+  padding-right: 30px;
   transition: transform 0.3s ease;
   
   &:hover {
     transform: translateY(-5px);
+  }
+`;
+
+const TimelineItemRight = styled.div`
+  padding-left: 30px;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const TimelineEmpty = styled.div`
+  /* Empty space for the timeline layout */
+`;
+
+const TimelineCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+`;
+
+const TimelineDot = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  margin-top: 20px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: white;
   }
 `;
 
@@ -236,27 +347,17 @@ const TimelineContent = styled.div`
   background-color: var(--card-bg);
   border-radius: 12px;
   box-shadow: var(--card-shadow);
-  text-align: center;
+  text-align: left;
   height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  border-top: 4px solid var(--primary-color);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    opacity: 0.8;
-  }
+  border-left: 4px solid var(--primary-color);
+  color: var(--text-color);
   
   h4 {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: var(--primary-color);
     font-size: 1.2rem;
     font-weight: 600;
@@ -265,13 +366,14 @@ const TimelineContent = styled.div`
   .timeline-date {
     font-size: 0.9rem;
     color: var(--text-light);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-weight: 500;
+    font-style: italic;
   }
   
   .timeline-company {
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: var(--text-color);
   }
   
@@ -281,6 +383,13 @@ const TimelineContent = styled.div`
     line-height: 1.6;
     margin-bottom: 0;
   }
+  
+  @media (max-width: 768px) {
+    text-align: center;
+    border-left: none;
+    border-top: 4px solid var(--primary-color);
+  }
+
 `;
 
 const AboutBottomSections = styled.div`
@@ -295,11 +404,13 @@ const AboutBottomSections = styled.div`
 
 const DrivesMeSection = styled.div`
   flex: 1;
+  color: var(--text-color);
   
   h3 {
     font-size: 1.6rem;
     text-align: left;
     margin-bottom: 20px;
+    color: var(--text-color);
   }
 `;
 
@@ -315,6 +426,7 @@ const DriveItem = styled.div`
   border-radius: 10px;
   box-shadow: var(--card-shadow);
   transition: transform 0.3s ease;
+  color: var(--text-color);
   
   &:hover {
     transform: translateY(-5px);
@@ -324,15 +436,21 @@ const DriveItem = styled.div`
     color: var(--primary-color);
     margin-bottom: 15px;
   }
+  
+  p {
+    color: var(--text-color);
+  }
 `;
 
 const BeyondSection = styled.div`
   flex: 1;
+  color: var(--text-color);
   
   h3 {
     font-size: 1.6rem;
     text-align: left;
     margin-bottom: 20px;
+    color: var(--text-color);
   }
   
   p {
@@ -341,6 +459,7 @@ const BeyondSection = styled.div`
     border-radius: 10px;
     box-shadow: var(--card-shadow);
     line-height: 1.8;
+    color: var(--text-color);
   }
 `;
 

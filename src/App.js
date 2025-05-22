@@ -27,11 +27,15 @@ function App() {
     localStorage.setItem('theme', theme === 'light' ? 'dark' : 'light');
   };
   
-  // Load saved theme from localStorage
+  // Load saved theme from localStorage or set dark theme as default
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setTheme(savedTheme);
+    } else {
+      // Set dark theme as default and save to localStorage
+      setTheme('dark');
+      localStorage.setItem('theme', 'dark');
     }
     
     // Simulate loading
@@ -53,7 +57,7 @@ function App() {
   return (
     <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
       <GlobalStyles />
-      <div className="App">
+      <div className="App" data-theme={theme}>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <main>
           <Hero profileData={profileData} />
