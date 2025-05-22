@@ -12,7 +12,7 @@
       "id": 1,
       "title": "Truck-Delay-Classification---End-to-End-ML-Pipeline",
       "description": "Domain/Function: logistics.\n An end-to-end machine learning pipeline to predict truck shipment delays using real-world logistics data. Built with scalable architecture, automated training workflows, and continuous performance monitoring.",
-      "image": "/images/Truck Classification/truckclassification.png",
+      "image": "/images/Truck Classification/truckclassification .png",
       "tags": ["Machine Learning", "Python", "Scikit-learn", "Pandas", "Numpy", "Weights and Baises", "Hopswork", "Evidently AI", "Streamlit"],
       "category": "machine-learning",
       "github": "https://github.com/kasimajji/Truck-Delay-Classification---End-to-End-ML-Pipeline",
@@ -56,10 +56,10 @@
       "youtubeVideo": null,
       "fullDescription": "NLP | Machine Learning | SVM\n\nBuilt an end-to-end NLP pipeline to classify restaurant reviews into positive or negative sentiment using an LSTM-based deep learning model.\n\nPreprocessed text (cleaning, tokenization, padding) and trained a binary classifier using word embeddings.\nAchieved 90%+ accuracy, visualized model performance, and validated predictions.\nIdeal for applications in customer feedback systems and automated review monitoring.",
       "additionalImages": [
-        { "url": "/images/Restaurant Review/Positive.png", "description": "Positive review stream lit ui" },
-        { "url": "/images/Restaurant Review/Negative.png", "description": "Negative review stream lit ui" },
-        { "url": "/images/Restaurant Review/model_comparison.png", "description": "Model comparison" },
-        { "url": "/images/Restaurant Review/MLFlow.png", "description": "MLFlow" }
+        { "url": "/images/Restaurant Review/MLFlow.png", "description": "MLFlow tracking UI" },
+        { "url": "/images/Restaurant Review/model_comparison.png", "description": "Model comparison metrics" },
+        { "url": "/images/Restaurant Review/Positive.png", "description": "Positive sentiment example" },
+        { "url": "/images/Restaurant Review/Negative.png", "description": "Negative sentiment example" }
       ]
     },
     {
@@ -75,9 +75,9 @@
       "youtubeVideo": null,
       "fullDescription": "Customer Segmentation with K-Means Clustering\n\nApplied unsupervised learning to segment customers based on purchasing behavior using K-Means Clustering.\nPreprocessed customer data and explored optimal clusters using the Elbow Method.\nVisualized clusters to uncover actionable patterns in spending, frequency, and recency.\nEnabled targeted marketing by identifying distinct customer groups.",
       "additionalImages": [
-        { "url": "/images/Customer Segmentation/3d_cluster.png", "description": "3d cluster" },
-        { "url": "/images/Customer Segmentation/Architecture.png", "description": "Architecture daigram" },
-        { "url": "/images/Customer Segmentation/avg distribution.png", "description": "Average distribution" }
+        { "url": "/images/Customer Segmentation/Arch.png", "description": "Project architecture diagram" },
+        { "url": "/images/Customer Segmentation/3d_cluster.png", "description": "3D visualization of customer clusters" },
+        { "url": "/images/Customer Segmentation/avg distribution.png", "description": "Average distribution across clusters" }
       ]
     },
     {
@@ -93,8 +93,8 @@
       "youtubeVideo": null,
       "fullDescription": "Natural Language to SQL – Powered by GPT-4 and Streamlit\n\nThis project simplifies data access by converting plain English into SQL queries using OpenAI's GPT-4. Built with Streamlit, the app connects to Databricks and Snowflake, enabling non-technical users to query complex databases effortlessly.\n\nKey Highlights:\n\nConverts natural language into optimized SQL using LLMs\nSecure login with session-based user authentication\nIntegrated with Databricks for live query execution\nFeatures ERD generation, prompt chaining, and error handling\nDeployable on AWS EC2 with HTTPS\nTech Stack: Python, Streamlit, OpenAI GPT-4, LangChain, Databricks, Snowflake, Azure, AWS\n\nThis tool democratizes data access, boosts productivity, and empowers decision-makers by eliminating the need to write SQL manually.",
       "additionalImages": [
-        { "url": "/images/SQlllm/Arch_daigraml.png", "description": "Architecture daigram" },
-        { "url": "/images/SQlllm/Ui.png", "description": "Stream lit ui" }
+        { "url": "/images/SQlllm/Arch_daigram.png", "description": "System architecture diagram" },
+        { "url": "/images/SQlllm/Ui.png", "description": "User interface screenshot" }
       ]
     },
     {
@@ -111,9 +111,9 @@
       "fullDescription": "Predicting accurate insurance premiums using machine learning\n\nThis project demonstrates the development of an end-to-end machine learning model to estimate insurance costs based on user data such as age, BMI, smoking status, and region. The goal is to help insurers and users alike by predicting fair insurance premiums efficiently and transparently.\n\n🔍 What It Does\n\nIngests and preprocesses real-world insurance data\nTrains and evaluates multiple regression models (Linear Regression, Random Forest, XGBoost)\nCompares model performance using MAE, MSE, and R² metrics\nDeploys the best model with an interactive user interface using Streamlit\n\n⚙️ Key Features\n\nFeature Engineering: Encodes categorical features and scales numerical ones\nModel Tuning: Uses GridSearchCV for optimal hyperparameters\nVisualization: Includes exploratory data analysis for insights\nDeployment Ready: Streamlit app for real-time insurance quote predictions\n\n🧰 Tech Stack\nPython, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit",
       "additionalImages": [
         { "url": "/images/Insurance/1.png", "description": "Stream Lit ui for app" },
-        { "url": "/images/Insurance/correlation_matrix.png", "description": "Correlation matrix" },
-        { "url": "/images/Insurance/Risk Comparison.png", "description": "Risk comparison" },
-        { "url": "/images/Insurance/truevspredicted for Rest of age group.png", "description": "True vs predicted" }
+        { "url": "/images/Insurance/correlation_matrix.png", "description": "Feature correlation matrix" },
+        { "url": "/images/Insurance/Risk Comparison.png", "description": "Risk factor comparison" },
+        { "url": "/images/Insurance/truevspredicted for Rest of age group.png", "description": "True vs predicted values" }
       ]
     },
     {

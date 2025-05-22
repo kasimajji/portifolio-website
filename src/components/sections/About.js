@@ -20,7 +20,7 @@ const About = ({ profileData }) => {
           
           <AboutText>
             <p dangerouslySetInnerHTML={{ __html: profileData?.aboutMe?.replace(/\n/g, '<br>') || '' }}></p>
-            <DownloadButton href="/images/DS_KM_github.pdf" target="_blank">
+            <DownloadButton href={profileData?.resumeLink} target="_blank">
               <FaDownload /> Download Resume
             </DownloadButton>
           </AboutText>

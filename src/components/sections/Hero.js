@@ -52,7 +52,7 @@ const Hero = ({ profileData }) => {
               <PrimaryButton href="#projects">
                 <FaCode /> View Projects
               </PrimaryButton>
-              <SecondaryButton href="/images/DS_KM_github.pdf" target="_blank">
+              <SecondaryButton href={profileData?.resumeLink} target="_blank">
                 <FaDownload /> Download Resume
               </SecondaryButton>
             </CTAButtons>
@@ -73,7 +73,7 @@ const Hero = ({ profileData }) => {
           <ProfileCircle>
             <ProfileGradient />
             <ProfileImageContainer>
-              <ProfileImage src="/images/profile-photo.png" alt="Kasi Majji" />
+              <ProfileImage src={profileData?.profilePhoto} alt="Kasi Majji" />
             </ProfileImageContainer>
           </ProfileCircle>
         </HeroContent>
