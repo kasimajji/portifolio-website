@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaLinkedin, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const Projects = ({ projectsData }) => {
@@ -9,6 +9,7 @@ const Projects = ({ projectsData }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const projects = projectsData?.projects || [];
   const categories = projectsData?.categories || [];
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (selectedProject) {
@@ -29,11 +30,6 @@ const Projects = ({ projectsData }) => {
   const openProjectModal = (project) => {
     setSelectedProject(project);
     setCurrentImageIndex(0); // Reset image index when opening modal
-    
-    // Just prevent scrolling without changing position
-    document.body.style.overflow = 'hidden';
-    
-    // Track modal open in analytics if needed
     console.log(`Project modal opened: ${project.title}`);
   };
   
@@ -56,11 +52,50 @@ const Projects = ({ projectsData }) => {
   };
 
   const closeProjectModal = () => {
-    // Simply restore scrolling
-    document.body.style.overflow = 'auto';
-    
     setSelectedProject(null);
   };
+
+  // Handle click outside modal to close it
+  const handleClickOutside = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      closeProjectModal();
+    }
+  };
+  
+  // Handle keyboard events for modal accessibility
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape' && selectedProject) {
+      closeProjectModal();
+    }
+  };
+
+  // Add event listeners for modal accessibility
+  useEffect(() => {
+    if (selectedProject) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      // Lock scroll when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      // Focus trap - focus the modal when it opens
+      if (modalRef.current) {
+        modalRef.current.focus();
+      }
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+      
+      // Restore scroll when modal is closed
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedProject]);
 
   // Filter projects based on active filter
   const filteredProjects = activeFilter === 'all'
@@ -127,15 +162,23 @@ const Projects = ({ projectsData }) => {
         </ProjectsGrid>
         
         {/* Project Modal */}
-        {selectedProject && (
-          <ProjectModal>
-            <ModalOverlay onClick={closeProjectModal} />
-            <ModalContent style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}>
+        <AnimatePresence>
+          {selectedProject && (
+            <ProjectModal onClick={closeProjectModal}>
+              <ModalOverlay 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+              <ModalContent
+                ref={modalRef}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                tabIndex={-1}
+              >
               <ModalCloseButton onClick={closeProjectModal}>
                 <FaTimes />
               </ModalCloseButton>
@@ -248,9 +291,10 @@ const Projects = ({ projectsData }) => {
                   </ModalVideoContainer>
                 </ModalBottomRight>
               </ModalBottomSection>
-            </ModalContent>
-          </ProjectModal>
-        )}
+              </ModalContent>
+            </ProjectModal>
+          )}
+        </AnimatePresence>
       </div>
     </ProjectsSection>
   );
@@ -373,16 +417,6 @@ const ProjectTitle = styled.h3`
   color: var(--text-color);
 `;
 
-const ProjectCategory = styled.span`
-  display: inline-block;
-  font-size: 0.8rem;
-  color: var(--primary-color);
-  background-color: rgba(138, 43, 226, 0.1);
-  padding: 5px 12px;
-  border-radius: 50px;
-  margin-bottom: 15px;
-`;
-
 const ProjectDescription = styled.p`
   color: var(--text-light);
   margin-bottom: 20px;
@@ -393,50 +427,68 @@ const ProjectDescription = styled.p`
   line-height: 1.6;
 `;
 
-const ProjectTags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+const ModalTitle = styled.h3`
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-weight: 600;
 `;
 
-const ProjectTag = styled.span`
+const ProjectCategory = styled.span`
+  display: inline-block;
   font-size: 0.8rem;
-  color: var(--text-light);
-  background-color: var(--light-color);
-  padding: 4px 10px;
+  color: var(--primary-color);
+  background-color: rgba(138, 43, 226, 0.1);
+  padding: 5px 15px;
   border-radius: 50px;
+  margin-bottom: 20px;
 `;
 
 // Modal Styled Components
+const ProjectModal = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
+`;
 
-const ProjectModal = styled.div`
+const ModalOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   pointer-events: auto; /* Capture clicks */
+  z-index: 1000;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled(motion.div)`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
   width: 90%;
   max-width: 900px;
   max-height: 85vh;
   overflow-y: auto;
   z-index: 1001;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   pointer-events: auto; /* Capture clicks */
+  padding: 0; /* Remove default padding */
+  display: flex;
+  flex-direction: column;
+
   
   /* Ensure modal is not cut off on smaller screens */
   @media (max-height: 700px) {
@@ -464,18 +516,24 @@ const ModalContent = styled.div`
 
 const ModalCloseButton = styled.button`
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.1);
   border: none;
+  color: var(--text-light);
   font-size: 1.2rem;
-  color: #888;
   cursor: pointer;
-  z-index: 1002;
-  transition: color 0.2s ease;
+  z-index: 10;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
   
   &:hover {
-    color: #333;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--primary-color);
   }
 `;
 
@@ -484,60 +542,88 @@ const ModalHeader = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
-const ModalHeaderContent = styled.div`
+const ModalDescription = styled.p`
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-size: 1rem;
+`;
+
+const ModalTags = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const ModalSkillTag = styled.span`
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+`;
+
+const ModalLinks = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
   
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
   }
 `;
 
-const ModalHeaderButtons = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const ModalHeaderButton = styled.a`
+const ModalLink = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: ${props => props.href.includes('github') ? '#333' : 'var(--primary-color)'};
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  background-color: ${props => props.href?.includes('github') ? '#333' : 'var(--primary-color)'};
   color: white;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
   text-decoration: none;
-  transition: opacity 0.2s ease;
   
   &:hover {
-    opacity: 0.9;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
   }
-`;
-
-const ModalBody = styled.div`
-  padding: 30px;
-`;
-
-const ModalColumns = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  margin-bottom: 30px;
   
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  &:nth-child(2) {
+    background-color: var(--light-color);
+    color: var(--text-color);
+    
+    &:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
   }
 `;
 
-const ModalColumn = styled.div`
-  display: flex;
-  flex-direction: column;
+const ModalTag = styled.span`
+  font-size: 0.8rem;
+  color: var(--text-color);
+  background-color: var(--light-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
+const ModalSectionTitle = styled.h4`
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-weight: 600;
 `;
 
 const ModalVideoContainer = styled.div`
@@ -564,153 +650,12 @@ const VideoPlaceholder = styled.div`
   font-style: italic;
 `;
 
-const AdditionalImagesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-`;
-
-const AdditionalImage = styled.div`
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
-  img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-`;
-
-const ImageCaption = styled.div`
-  padding: 10px;
-  font-size: 0.85rem;
-  color: var(--text-light);
-  background-color: white;
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 1.6rem;
-  margin: 0;
-  color: var(--text-color);
-`;
-
-const ModalCategory = styled.span`
-  display: inline-block;
-  font-size: 0.9rem;
-  color: var(--primary-color);
-  background-color: rgba(138, 43, 226, 0.1);
-  padding: 5px 15px;
-  border-radius: 50px;
-  margin-bottom: 20px;
-`;
-
-const ModalDescription = styled.div`
-  color: var(--text-light);
-  line-height: 1.7;
-  font-size: 0.95rem;
-  
-  p {
-    margin-bottom: 15px;
-  }
-`;
-
-const ModalSection = styled.div`
-  margin-bottom: 25px;
-`;
-
-const ModalSectionTitle = styled.h4`
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  color: var(--text-color);
-  font-weight: 600;
-`;
-
-const ModalFeaturesList = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const ModalFeatureItem = styled.li`
-  position: relative;
-  padding-left: 25px;
-  margin-bottom: 10px;
-  color: var(--text-light);
-  
-  &::before {
-    content: '•';
-    position: absolute;
-    left: 0;
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    line-height: 1;
-  }
-`;
-
-const ModalTags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const ModalTag = styled.span`
-  font-size: 0.8rem;
-  color: var(--text-color);
-  background-color: var(--light-color);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-weight: 500;
-  
-  &:hover {
-    background-color: #e0e0e0;
-  }
-`;
-
-const ModalLinks = styled.div`
-  display: flex;
-  gap: 15px;
-  margin-top: 30px;
-  
-  @media (max-width: 480px) {
-    flex-direction: column;
-  }
-`;
-
-const ModalLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px 25px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: var(--transition);
-  background-color: var(--primary-color);
-  color: white;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
-  }
-  
-  &:nth-child(2) {
-    background-color: var(--light-color);
-    color: var(--text-color);
-    
-    &:hover {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-  }
-`;
-
 // New Modal Components
 const ModalTopSection = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  padding: 30px 30px 20px;
+  padding: 30px;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
