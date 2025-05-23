@@ -52,7 +52,7 @@ const Hero = ({ profileData }) => {
               <PrimaryButton href="#projects">
                 <FaCode /> View Projects
               </PrimaryButton>
-              <SecondaryButton href={profileData?.resumeLink} target="_blank">
+              <SecondaryButton href={`${process.env.PUBLIC_URL}${profileData?.resumeLink}`} target="_blank">
                 <FaDownload /> Download Resume
               </SecondaryButton>
             </CTAButtons>
@@ -73,7 +73,13 @@ const Hero = ({ profileData }) => {
           <ProfileCircle>
             <ProfileGradient />
             <ProfileImageContainer>
-              <ProfileImage src={profileData?.profilePhoto} alt="Kasi Majji" />
+              <ProfileImage 
+                src={`${process.env.PUBLIC_URL}${profileData?.profilePhoto}`} 
+                alt="Kasi Majji" 
+                onError={(e) => {
+                  e.target.src = `${process.env.PUBLIC_URL}/images/profile-placeholder.jpg`;
+                }}
+              />
             </ProfileImageContainer>
           </ProfileCircle>
         </HeroContent>

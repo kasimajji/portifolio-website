@@ -70,10 +70,10 @@ const Certifications = ({ certificationsData }) => {
               <CertificationCard key={certification.id || index} onClick={() => openCertificateModal(certification)}>
                 <CertificateImage>
                   <img 
-                    src={certification.image} 
+                    src={`${process.env.PUBLIC_URL}${certification.image}`} 
                     alt={certification.title}
                     onError={(e) => {
-                      e.target.src = '/images/certification-placeholder.jpg';
+                      e.target.src = `${process.env.PUBLIC_URL}/images/certification-placeholder.jpg`;
                     }}
                   />
                   <CertificateOverlay>
@@ -147,7 +147,7 @@ const Certifications = ({ certificationsData }) => {
                     </ErrorMessage>
                   ) : (
                     <ModalImage 
-                      src={selectedCertificate.image} 
+                      src={`${process.env.PUBLIC_URL}${selectedCertificate.image}`} 
                       alt={selectedCertificate.title}
                       onLoad={handleImageLoad}
                       onError={handleImageError}

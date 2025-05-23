@@ -164,7 +164,13 @@ const Projects = ({ projectsData }) => {
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id}>
               <ProjectImg onClick={() => openProjectModal(project)}>
-                <img src={project.image} alt={project.title} />
+                <img 
+                  src={`${process.env.PUBLIC_URL}${project.image}`} 
+                  alt={project.title}
+                  onError={(e) => {
+                    e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                  }}
+                />
               </ProjectImg>
               <ProjectInfo onClick={() => openProjectModal(project)}>
                 <ProjectTitle>{project.title}</ProjectTitle>
@@ -267,10 +273,13 @@ const Projects = ({ projectsData }) => {
                 <ModalTopRight>
                   {selectedProject.additionalImages && selectedProject.additionalImages.length > 0 ? (
                     <ImageCarousel>
-                      <CarouselImage onClick={() => setEnlargedImage(selectedProject.additionalImages[currentImageIndex].url)}>
+                      <CarouselImage onClick={() => setEnlargedImage(`${process.env.PUBLIC_URL}${selectedProject.additionalImages[currentImageIndex].url}`)}>
                         <img 
-                          src={selectedProject.additionalImages[currentImageIndex].url} 
-                          alt={selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`} 
+                          src={`${process.env.PUBLIC_URL}${selectedProject.additionalImages[currentImageIndex].url}`} 
+                          alt={selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`}
+                          onError={(e) => {
+                            e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                          }}
                         />
                       </CarouselImage>
                       
@@ -301,7 +310,13 @@ const Projects = ({ projectsData }) => {
                     </ImageCarousel>
                   ) : (
                     <ImagePlaceholder>
-                      <img src={selectedProject.image} alt={selectedProject.title} />
+                      <img 
+                        src={`${process.env.PUBLIC_URL}${selectedProject.image}`} 
+                        alt={selectedProject.title}
+                        onError={(e) => {
+                          e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                        }}
+                      />
                     </ImagePlaceholder>
                   )}
                 </ModalTopRight>
