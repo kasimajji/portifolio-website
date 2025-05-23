@@ -51,68 +51,71 @@ const Contact = ({ contactData }) => {
 
 // Styled Components
 const ContactSection = styled.section`
-  padding: 100px 0;
+  padding: 60px 0 40px 0;
   background-color: var(--background-color);
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   position: relative;
   display: inline-block;
+  width: 100%;
   
   &::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
+    width: 60px;
+    height: 3px;
     background-color: var(--primary-color);
     border-radius: 2px;
   }
 `;
 
 const ContactContent = styled.div`
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
 `;
 
 const ContactText = styled.div`
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 35px;
   
   h3 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
     color: var(--text-color);
   }
   
   p {
     color: var(--text-light);
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
-    line-height: 1.8;
+    line-height: 1.6;
+    font-size: 0.9rem;
   }
 `;
 
 const ContactTiles = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 20px;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 `;
 
 const ContactTile = styled.a`
   background-color: var(--card-bg);
   border-radius: var(--border-radius);
-  padding: 40px 30px;
+  padding: 25px 20px;
   text-align: center;
   box-shadow: var(--card-shadow);
   transition: var(--transition);
@@ -130,7 +133,7 @@ const ContactTile = styled.a`
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
+    height: 3px;
     background: var(--gradient-bg);
     transform: scaleX(0);
     transform-origin: left;
@@ -142,22 +145,22 @@ const ContactTile = styled.a`
   }
   
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(138, 43, 226, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(138, 43, 226, 0.15);
   }
 `;
 
 const ContactTileIcon = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--light-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: var(--primary-color);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   transition: var(--transition);
   
   ${ContactTile}:hover & {
@@ -168,8 +171,8 @@ const ContactTileIcon = styled.div`
 `;
 
 const ContactTileTitle = styled.h4`
-  font-size: 1.3rem;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
   transition: var(--transition);
   
   ${ContactTile}:hover & {
@@ -179,7 +182,9 @@ const ContactTileTitle = styled.h4`
 
 const ContactTileDescription = styled.p`
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
 `;
 
 export default Contact;

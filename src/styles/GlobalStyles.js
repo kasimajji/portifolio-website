@@ -59,6 +59,7 @@ const GlobalStyles = createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    height: 100%;
   }
 
   body {
@@ -68,11 +69,29 @@ const GlobalStyles = createGlobalStyle`
     position: relative;
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
-    height: auto;
+    height: 100%;
     min-height: 100vh;
     font-size: 0.95rem; /* Decreased base font size */
     background: var(--background-gradient);
     backdrop-filter: var(--backdrop-filter);
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .App {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
   }
 
   a {

@@ -31,7 +31,8 @@ const Footer = () => {
 const FooterContainer = styled.footer`
   background: var(--footer-bg);
   color: var(--footer-text);
-  padding: 30px 0;
+  padding: 20px 0;
+  margin-top: auto;
 `;
 
 const FooterContent = styled.div`
@@ -41,13 +42,14 @@ const FooterContent = styled.div`
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     text-align: center;
   }
 `;
 
 const Copyright = styled.p`
   font-size: 0.9rem;
+  margin: 0;
 `;
 
 const SocialLinks = styled.div`
