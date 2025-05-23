@@ -58,6 +58,9 @@ const Projects = ({ projectsData }) => {
 
   // Handle click outside modal to close it
   const handleClickOutside = (e) => {
+    // Don't close the project modal if we're interacting with the enlarged image modal
+    if (enlargedImage) return;
+    
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       closeProjectModal();
     }
@@ -65,8 +68,15 @@ const Projects = ({ projectsData }) => {
   
   // Handle keyboard events for modal accessibility
   const handleKeyDown = (e) => {
-    if (e.key === 'Escape' && selectedProject) {
-      closeProjectModal();
+    if (e.key === 'Escape') {
+      // If enlarged image is open, close it first
+      if (enlargedImage) {
+        setEnlargedImage(null);
+      } 
+      // Otherwise close the project modal
+      else if (selectedProject) {
+        closeProjectModal();
+      }
     }
   };
 
@@ -89,6 +99,9 @@ const Projects = ({ projectsData }) => {
       
       // Restore scroll when modal is closed
       document.body.style.overflow = 'auto';
+      
+      // Make sure enlarged image is also closed when project modal closes
+      setEnlargedImage(null);
     }
     
     return () => {
@@ -96,7 +109,7 @@ const Projects = ({ projectsData }) => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'auto';
     };
-  }, [selectedProject]);
+  }, [selectedProject, enlargedImage]);
 
   // Filter projects based on active filter
   const filteredProjects = activeFilter === 'all'
@@ -149,15 +162,47 @@ const Projects = ({ projectsData }) => {
         
         <ProjectsGrid>
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} onClick={() => openProjectModal(project)}>
-              <ProjectImg>
+            <ProjectCard key={project.id}>
+              <ProjectImg onClick={() => openProjectModal(project)}>
                 <img src={project.image} alt={project.title} />
               </ProjectImg>
-              <ProjectInfo>
+              <ProjectInfo onClick={() => openProjectModal(project)}>
                 <ProjectTitle>{project.title}</ProjectTitle>
                 <ProjectCategory>{project.category}</ProjectCategory>
                 <ProjectDescription>{project.description.substring(0, 100)}...</ProjectDescription>
               </ProjectInfo>
+              <ProjectLinks>
+                {project.github && (
+                  <ProjectLink 
+                    href={project.github} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaGithub />
+                  </ProjectLink>
+                )}
+                {project.demo && (
+                  <ProjectLink 
+                    href={project.demo} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaExternalLinkAlt />
+                  </ProjectLink>
+                )}
+                {project.linkedinPost && (
+                  <ProjectLink 
+                    href={project.linkedinPost} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaLinkedin />
+                  </ProjectLink>
+                )}
+              </ProjectLinks>
             </ProjectCard>
           ))}
         </ProjectsGrid>
@@ -298,32 +343,52 @@ const Projects = ({ projectsData }) => {
           )}
         </AnimatePresence>
         
-        {/* Enlarged Image Modal */}
-        <AnimatePresence>
-          {enlargedImage && (
-            <EnlargedImageModal onClick={() => setEnlargedImage(null)}>
+        {/* Enlarged Image Modal - Completely separate from project modal */}
+        {enlargedImage && (
+          <AnimatePresence>
+            <EnlargedImageModal 
+              key="enlarged-image-modal"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setEnlargedImage(null);
+              }}
+            >
               <ModalOverlay 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                onClick={() => setEnlargedImage(null)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setEnlargedImage(null);
+                }}
               />
               <EnlargedImageContainer
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.2 }}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
               >
                 <img src={enlargedImage} alt="Enlarged view" />
-                <CloseEnlargedButton onClick={() => setEnlargedImage(null)}>
+                <CloseEnlargedButton 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEnlargedImage(null);
+                  }}
+                >
                   <FaTimes />
                 </CloseEnlargedButton>
               </EnlargedImageContainer>
             </EnlargedImageModal>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        )}
       </div>
     </ProjectsSection>
   );
@@ -399,7 +464,6 @@ const ProjectCard = styled.div`
   transition: var(--transition);
   border: 1px solid rgba(138, 43, 226, 0.1);
   position: relative;
-  cursor: pointer;
   
   &::before {
     content: '';
@@ -427,6 +491,7 @@ const ProjectImg = styled.div`
   width: 100%;
   height: 220px;
   overflow: hidden;
+  cursor: pointer;
   
   img {
     width: 100%;
@@ -437,7 +502,7 @@ const ProjectImg = styled.div`
 `;
 
 const ProjectInfo = styled.div`
-  padding: 25px;
+  padding: 25px 25px 15px;
 `;
 
 const ProjectTitle = styled.h3`
@@ -448,7 +513,7 @@ const ProjectTitle = styled.h3`
 
 const ProjectDescription = styled.p`
   color: var(--text-light);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -473,7 +538,7 @@ const ProjectCategory = styled.span`
   background-color: rgba(138, 43, 226, 0.1);
   padding: 5px 15px;
   border-radius: 50px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 `;
 
 // Modal Styled Components
@@ -870,6 +935,8 @@ const EnlargedImageModal = styled(motion.div)`
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* Prevent interaction with elements below */
+  isolation: isolate;
 `;
 
 const EnlargedImageContainer = styled(motion.div)`
@@ -909,6 +976,36 @@ const CloseEnlargedButton = styled.button`
   
   &:hover {
     background: var(--primary-color);
+  }
+`;
+
+// Project card link components
+const ProjectLinks = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 25px 15px;
+`;
+
+const ProjectLink = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(138, 43, 226, 0.1);
+  color: var(--primary-color);
+  transition: var(--transition);
+  
+  &:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+  }
+  
+  svg {
+    font-size: 16px;
   }
 `;
 

@@ -16,7 +16,7 @@
       "tags": ["Machine Learning", "Python", "Scikit-learn", "Pandas", "Numpy", "Weights and Baises", "Hopswork", "Evidently AI", "Streamlit"],
       "category": "machine-learning",
       "github": "https://github.com/kasimajji/Truck-Delay-Classification---End-to-End-ML-Pipeline",
-      "demo": "#",
+      "demo": null,
       "linkedinPost": null,
       "youtubeVideo": null,
       "fullDescription": "In the logistics industry, unanticipated truck delays lead to increased costs and customer dissatisfaction. This project presents a robust ML solution to classify and predict such delays based on route, schedule, weather, and traffic data. \n I designed and implemented a complete ML lifecycle—from data ingestion to model deployment—using tools like Python, scikit-learn, MLflow, and AWS SageMaker. Feature management was streamlined using Hopsworks, and models were continuously evaluated and retrained via automated pipelines. This solution empowers logistics teams to take proactive action, optimize deliveries, and minimize operational disruptions.",
