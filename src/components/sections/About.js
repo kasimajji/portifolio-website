@@ -123,31 +123,58 @@ const About = ({ profileData }) => {
           </VerticalTimeline>
         </JourneySection>
         
-        {/* Two-column layout for What Drives Me and Beyond Work */}
-        <AboutBottomSections>
-          <DrivesMeSection>
-            <h3>What Drives Me</h3>
-            <DrivesContent>
-              {profileData?.drivesMe?.split('\n\n').map((item, index) => {
-                const parts = item.split('\n');
-                const title = parts[0];
-                const description = parts.slice(1).join('\n');
+        {/* What Drives Me section with vertical line and content */}
+        <WhatDrivesMeSection>
+          <SectionHeading>
+            <h3>WHAT DRIVES ME</h3>
+            <VerticalLine />
+          </SectionHeading>
+          
+          <DrivesContent>
+            {profileData?.whatDrivesMe?.split('\n').map((item, index) => {
+              // Check if the item contains a colon to separate title and description
+              const colonIndex = item.indexOf(':');
+              if (colonIndex !== -1) {
+                const title = item.substring(0, colonIndex).trim();
+                const description = item.substring(colonIndex + 1).trim();
+                
+                // Determine which emoji to use based on the title
+                let emoji = '🔍'; // Default emoji
+                if (title.toLowerCase().includes('curiosity')) {
+                  emoji = '🔍';
+                } else if (title.toLowerCase().includes('full-stack')) {
+                  emoji = '🔧';
+                } else if (title.toLowerCase().includes('value')) {
+                  emoji = '📈';
+                }
                 
                 return (
                   <DriveItem key={index}>
-                    <h4>{title}</h4>
-                    <p>{description}</p>
+                    <DriveItemTitle>
+                      <span className="emoji">{emoji}</span> <span className="title">{title}</span>
+                    </DriveItemTitle>
+                    <DriveItemDescription>{description}</DriveItemDescription>
                   </DriveItem>
                 );
-              })}
-            </DrivesContent>
-          </DrivesMeSection>
+              }
+              return null; // Skip items without a colon
+            }).filter(Boolean)}
+          </DrivesContent>
+        </WhatDrivesMeSection>
+        
+        {/* Beyond The Work section with vertical line */}
+        <BeyondWorkSection>
+          <SectionHeading>
+            <h3>BEYOND THE WORK</h3>
+            <VerticalLine />
+          </SectionHeading>
           
-          <BeyondSection>
-            <h3>Beyond Work</h3>
-            <p>{profileData?.beyondWork}</p>
-          </BeyondSection>
-        </AboutBottomSections>
+          <BeyondContent>
+            {profileData?.beyondTheWork?.split('\n').map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </BeyondContent>
+        </BeyondWorkSection>
       </div>
     </AboutSection>
   );
@@ -155,7 +182,7 @@ const About = ({ profileData }) => {
 
 // Styled Components
 const AboutSection = styled.section`
-  padding: 100px 0;
+  padding: 60px 0 40px; /* Reduced padding to make it more compact */
   background-color: var(--section-bg);
 `;
 
@@ -163,7 +190,7 @@ const SectionTitle = styled.h2`
   font-size: 2.2rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 5px; /* Reduced from 10px to 5px */
   position: relative;
   display: inline-block;
   color: var(--text-color);
@@ -171,11 +198,11 @@ const SectionTitle = styled.h2`
   &::after {
     content: '';
     position: absolute;
-    bottom: -6px;
+    bottom: -4px; /* Reduced from -6px to -4px */
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    height: 4px;
+    height: 3px; /* Reduced from 4px to 3px */
     background-color: var(--primary-color);
     border-radius: 2px;
   }
@@ -184,8 +211,9 @@ const SectionTitle = styled.h2`
 const AboutContent = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* Align to top instead of center */
+  align-items: center; /* Changed from flex-start to center to align video with text */
   gap: 20px;
+  margin-top: 10px; /* Added margin-top to reduce space from title */
   margin-bottom: 20px;
   
   @media (max-width: 992px) {
@@ -209,7 +237,7 @@ const IntroVideo = styled.iframe`
   border-radius: 15px;
   border: none;
   box-shadow: var(--card-shadow);
-  margin-top: 30px; /* Add top margin to move it down */
+  margin-top: 35px; /* Reduced from 50px to 35px */
 `;
 
 const IntroVideoPlaceholder = styled.div`
@@ -222,7 +250,7 @@ const IntroVideoPlaceholder = styled.div`
   justify-content: center;
   color: var(--primary-color);
   border: 2px dashed var(--primary-color);
-  margin-top: 30px; /* Add top margin to move it down */
+  margin-top: 35px; /* Reduced from 50px to 35px */
   
   i {
     font-size: 3rem;
@@ -235,6 +263,7 @@ const AboutText = styled.div`
   max-width: 55%;
   text-align: left;
   padding-left: 20px;
+  padding-right: 0; /* Remove any right padding to eliminate crossed space */
   color: var(--text-color);
   
   p {
@@ -250,6 +279,7 @@ const AboutText = styled.div`
     font-weight: 600;
     display: block;
     margin-bottom: 12px;
+    max-width: 100%; /* Ensure title doesn't overflow */
   }
   
   .highlight-word {
@@ -422,73 +452,87 @@ const TimelineContent = styled.div`
 
 `;
 
-const AboutBottomSections = styled.div`
+// What Drives Me section styling
+const WhatDrivesMeSection = styled.div`
+  margin-top: 40px;
   display: flex;
-  gap: 40px;
-  margin-top: 50px;
+  flex-direction: column;
+  color: var(--text-color);
+`;
+
+const SectionHeading = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
   
-  @media (max-width: 992px) {
-    flex-direction: column;
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 15px;
+    white-space: nowrap;
   }
 `;
 
-const DrivesMeSection = styled.div`
-  flex: 1;
-  color: var(--text-color);
-  
-  h3 {
-    font-size: 1.6rem;
-    text-align: left;
-    margin-bottom: 20px;
-    color: var(--text-color);
-  }
+const VerticalLine = styled.div`
+  flex-grow: 1;
+  height: 1px;
+  background-color: #e0e0e0;
 `;
 
 const DrivesContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
+  padding-left: 20px;
 `;
 
 const DriveItem = styled.div`
-  background-color: var(--card-bg);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 15px;
+`;
+
+const DriveItemTitle = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 600;
   color: var(--text-color);
   
-  &:hover {
-    transform: translateY(-5px);
+  .emoji {
+    margin-right: 10px;
+    font-size: 1.1rem;
   }
   
-  h4 {
+  .title {
     color: var(--primary-color);
-    margin-bottom: 15px;
-  }
-  
-  p {
-    color: var(--text-color);
   }
 `;
 
-const BeyondSection = styled.div`
-  flex: 1;
+const DriveItemDescription = styled.p`
+  margin: 0;
+  padding-left: 30px;
   color: var(--text-color);
-  
-  h3 {
-    font-size: 1.6rem;
-    text-align: left;
-    margin-bottom: 20px;
-    color: var(--text-color);
-  }
+  line-height: 1.5;
+  font-size: 0.95rem;
+`;
+
+// Beyond Work section styling
+const BeyondWorkSection = styled.div`
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-color);
+`;
+
+const BeyondContent = styled.div`
+  padding-left: 20px;
   
   p {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: var(--card-shadow);
-    line-height: 1.8;
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
     color: var(--text-color);
   }
 `;

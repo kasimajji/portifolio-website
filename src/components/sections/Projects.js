@@ -151,15 +151,15 @@ const Projects = ({ projectsData }) => {
 
 // Styled Components
 const ProjectsSection = styled.section`
-  padding: 100px 0;
+  padding: 40px 0;
   background-color: var(--background-color);
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   position: relative;
   display: inline-block;
   
