@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaTimes, FaLinkedin, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const Projects = ({ projectsData }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const projects = projectsData?.projects || [];
   const categories = projectsData?.categories || [];
+
+  useEffect(() => {
+    if (selectedProject) {
+      // Disable scrolling on body when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      // Re-enable scrolling when modal is closed
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }
+  }, [selectedProject]);
 
   const filterProjects = (category) => {
     setActiveFilter(category);
@@ -15,12 +28,38 @@ const Projects = ({ projectsData }) => {
 
   const openProjectModal = (project) => {
     setSelectedProject(project);
+    setCurrentImageIndex(0); // Reset image index when opening modal
+    
+    // Just prevent scrolling without changing position
     document.body.style.overflow = 'hidden';
+    
+    // Track modal open in analytics if needed
+    console.log(`Project modal opened: ${project.title}`);
+  };
+  
+  const nextImage = (e) => {
+    e.stopPropagation();
+    if (selectedProject && selectedProject.additionalImages) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === selectedProject.additionalImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  };
+  
+  const prevImage = (e) => {
+    e.stopPropagation();
+    if (selectedProject && selectedProject.additionalImages) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === 0 ? selectedProject.additionalImages.length - 1 : prevIndex - 1
+      );
+    }
   };
 
   const closeProjectModal = () => {
-    setSelectedProject(null);
+    // Simply restore scrolling
     document.body.style.overflow = 'auto';
+    
+    setSelectedProject(null);
   };
 
   // Filter projects based on active filter
@@ -82,11 +121,6 @@ const Projects = ({ projectsData }) => {
                 <ProjectTitle>{project.title}</ProjectTitle>
                 <ProjectCategory>{project.category}</ProjectCategory>
                 <ProjectDescription>{project.description.substring(0, 100)}...</ProjectDescription>
-                <ProjectTags>
-                  {project.tags.map((tag, index) => (
-                    <ProjectTag key={index}>{tag}</ProjectTag>
-                  ))}
-                </ProjectTags>
               </ProjectInfo>
             </ProjectCard>
           ))}
@@ -96,51 +130,124 @@ const Projects = ({ projectsData }) => {
         {selectedProject && (
           <ProjectModal>
             <ModalOverlay onClick={closeProjectModal} />
-            <ModalContent>
+            <ModalContent style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}>
               <ModalCloseButton onClick={closeProjectModal}>
                 <FaTimes />
               </ModalCloseButton>
               
-              <ModalImage>
-                <img src={selectedProject.image} alt={selectedProject.title} />
-              </ModalImage>
-              
-              <ModalBody>
-                <ModalTitle>{selectedProject.title}</ModalTitle>
-                <ModalCategory>{selectedProject.category}</ModalCategory>
-                <ModalDescription>{selectedProject.description}</ModalDescription>
-                
-                <ModalSection>
-                  <ModalSectionTitle>Key Features</ModalSectionTitle>
-                  <ModalFeaturesList>
-                    {selectedProject.features.map((feature, index) => (
-                      <ModalFeatureItem key={index}>{feature}</ModalFeatureItem>
-                    ))}
-                  </ModalFeaturesList>
-                </ModalSection>
-                
-                <ModalSection>
-                  <ModalSectionTitle>Technologies Used</ModalSectionTitle>
+              {/* Top section with two columns */}
+              <ModalTopSection>
+                {/* Top Left: Title, Description, Skills, Links */}
+                <ModalTopLeft>
+                  <ModalTitle>{selectedProject.title}</ModalTitle>
+                  <ModalShortDescription>{selectedProject.description}</ModalShortDescription>
+                  
+                  <ModalSectionTitle>Skills & Technologies</ModalSectionTitle>
                   <ModalTags>
                     {selectedProject.tags.map((tag, index) => (
                       <ModalTag key={index}>{tag}</ModalTag>
                     ))}
                   </ModalTags>
-                </ModalSection>
+                  
+                  <ModalLinks>
+                    {selectedProject.github && (
+                      <ModalLink href={selectedProject.github} target="_blank" rel="noopener noreferrer">
+                        <FaGithub /> GitHub
+                      </ModalLink>
+                    )}
+                    {selectedProject.demo && (
+                      <ModalLink href={selectedProject.demo} target="_blank" rel="noopener noreferrer">
+                        <FaExternalLinkAlt /> Demo
+                      </ModalLink>
+                    )}
+                    {selectedProject.linkedinPost && (
+                      <ModalLink href={selectedProject.linkedinPost} target="_blank" rel="noopener noreferrer">
+                        <FaLinkedin /> LinkedIn Post
+                      </ModalLink>
+                    )}
+                  </ModalLinks>
+                </ModalTopLeft>
                 
-                <ModalLinks>
-                  {selectedProject.github && (
-                    <ModalLink href={selectedProject.github} target="_blank" rel="noopener noreferrer">
-                      <FaGithub /> View Code
-                    </ModalLink>
+                {/* Top Right: Image Carousel */}
+                <ModalTopRight>
+                  {selectedProject.additionalImages && selectedProject.additionalImages.length > 0 ? (
+                    <ImageCarousel>
+                      <CarouselImage>
+                        <img 
+                          src={selectedProject.additionalImages[currentImageIndex].url} 
+                          alt={selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`} 
+                        />
+                      </CarouselImage>
+                      
+                      <CarouselNavigation>
+                        <CarouselButton onClick={prevImage}>
+                          <FaArrowLeft />
+                        </CarouselButton>
+                        <CarouselCaption>
+                          {selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`}
+                        </CarouselCaption>
+                        <CarouselButton onClick={nextImage}>
+                          <FaArrowRight />
+                        </CarouselButton>
+                      </CarouselNavigation>
+                      
+                      <CarouselIndicators>
+                        {selectedProject.additionalImages.map((_, index) => (
+                          <CarouselIndicator 
+                            key={index} 
+                            active={index === currentImageIndex}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCurrentImageIndex(index);
+                            }}
+                          />
+                        ))}
+                      </CarouselIndicators>
+                    </ImageCarousel>
+                  ) : (
+                    <ImagePlaceholder>
+                      <img src={selectedProject.image} alt={selectedProject.title} />
+                    </ImagePlaceholder>
                   )}
-                  {selectedProject.demo && (
-                    <ModalLink href={selectedProject.demo} target="_blank" rel="noopener noreferrer">
-                      <FaExternalLinkAlt /> Live Demo
-                    </ModalLink>
-                  )}
-                </ModalLinks>
-              </ModalBody>
+                </ModalTopRight>
+              </ModalTopSection>
+              
+              {/* Divider Line */}
+              <ModalDivider />
+              
+              {/* Bottom section with two columns */}
+              <ModalBottomSection>
+                {/* Bottom Left: Project Explanation */}
+                <ModalBottomLeft>
+                  <ModalSectionTitle>Project Explanation</ModalSectionTitle>
+                  <ModalDescription dangerouslySetInnerHTML={{ __html: selectedProject.fullDescription.replace(/\n/g, '<br>') }} />
+                </ModalBottomLeft>
+                
+                {/* Bottom Right: Video Explanation */}
+                <ModalBottomRight>
+                  <ModalSectionTitle>Video Explanation</ModalSectionTitle>
+                  <ModalVideoContainer>
+                    {selectedProject.youtubeVideo ? (
+                      <iframe 
+                        src={selectedProject.youtubeVideo} 
+                        title={`${selectedProject.title} Video`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <VideoPlaceholder>
+                        <span>Video coming soon</span>
+                      </VideoPlaceholder>
+                    )}
+                  </ModalVideoContainer>
+                </ModalBottomRight>
+              </ModalBottomSection>
             </ModalContent>
           </ProjectModal>
         )}
@@ -301,38 +408,45 @@ const ProjectTag = styled.span`
 `;
 
 // Modal Styled Components
+
 const ProjectModal = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-`;
-
-const ModalOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  pointer-events: auto; /* Capture clicks */
 `;
 
 const ModalContent = styled.div`
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  width: 90%;
   max-width: 900px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
-  position: relative;
   z-index: 1001;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  pointer-events: auto; /* Capture clicks */
+  
+  /* Ensure modal is not cut off on smaller screens */
+  @media (max-height: 700px) {
+    max-height: 90vh;
+  }
+  
+  @media (max-width: 600px) {
+    width: 95%;
+    max-height: 90vh;
+  }
   
   &::-webkit-scrollbar {
     width: 8px;
@@ -350,39 +464,59 @@ const ModalContent = styled.div`
 
 const ModalCloseButton = styled.button`
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--light-color);
-  color: var(--text-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #888;
   cursor: pointer;
-  transition: var(--transition);
   z-index: 1002;
+  transition: color 0.2s ease;
   
   &:hover {
-    background-color: var(--primary-color);
-    color: white;
+    color: #333;
   }
 `;
 
-const ModalImage = styled.div`
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-  
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+const ModalHeader = styled.div`
+  padding: 20px 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+`;
+
+const ModalHeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
   
   @media (max-width: 768px) {
-    height: 250px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+`;
+
+const ModalHeaderButtons = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const ModalHeaderButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: ${props => props.href.includes('github') ? '#333' : 'var(--primary-color)'};
+  color: white;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    opacity: 0.9;
   }
 `;
 
@@ -390,9 +524,75 @@ const ModalBody = styled.div`
   padding: 30px;
 `;
 
+const ModalColumns = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ModalColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalVideoContainer = styled.div`
+  width: 100%;
+  height: 250px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+`;
+
+const VideoPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-style: italic;
+`;
+
+const AdditionalImagesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const AdditionalImage = styled.div`
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+`;
+
+const ImageCaption = styled.div`
+  padding: 10px;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  background-color: white;
+`;
+
 const ModalTitle = styled.h3`
-  font-size: 1.8rem;
-  margin-bottom: 10px;
+  font-size: 1.6rem;
+  margin: 0;
   color: var(--text-color);
 `;
 
@@ -406,10 +606,14 @@ const ModalCategory = styled.span`
   margin-bottom: 20px;
 `;
 
-const ModalDescription = styled.p`
+const ModalDescription = styled.div`
   color: var(--text-light);
-  line-height: 1.8;
-  margin-bottom: 25px;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  
+  p {
+    margin-bottom: 15px;
+  }
 `;
 
 const ModalSection = styled.div`
@@ -420,19 +624,7 @@ const ModalSectionTitle = styled.h4`
   font-size: 1.2rem;
   margin-bottom: 15px;
   color: var(--text-color);
-  position: relative;
-  display: inline-block;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background-color: var(--primary-color);
-    border-radius: 2px;
-  }
+  font-weight: 600;
 `;
 
 const ModalFeaturesList = styled.ul`
@@ -459,15 +651,20 @@ const ModalFeatureItem = styled.li`
 const ModalTags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 `;
 
 const ModalTag = styled.span`
-  font-size: 0.9rem;
-  color: var(--text-light);
+  font-size: 0.8rem;
+  color: var(--text-color);
   background-color: var(--light-color);
-  padding: 5px 15px;
-  border-radius: 50px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  
+  &:hover {
+    background-color: #e0e0e0;
+  }
 `;
 
 const ModalLinks = styled.div`
@@ -505,6 +702,156 @@ const ModalLink = styled.a`
     &:hover {
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
+  }
+`;
+
+// New Modal Components
+const ModalTopSection = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px 30px 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ModalTopLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalTopRight = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBottomSection = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 0 30px 30px 30px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ModalBottomLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBottomRight = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalDivider = styled.hr`
+  width: 100%;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 0;
+`;
+
+const ModalShortDescription = styled.p`
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-light);
+  margin-bottom: 20px;
+`;
+
+const ImageCarousel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const CarouselImage = styled.div`
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+`;
+
+const CarouselNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #f9f9f9;
+`;
+
+const CarouselButton = styled.button`
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const CarouselCaption = styled.div`
+  font-size: 0.9rem;
+  color: var(--text-light);
+  text-align: center;
+  flex-grow: 1;
+  padding: 0 10px;
+`;
+
+const CarouselIndicators = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  position: relative;
+`;
+
+const CarouselIndicator = styled.button`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: ${props => props.active ? 'var(--primary-color)' : '#ccc'};
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition);
+  
+  &:hover {
+    background-color: ${props => props.active ? 'var(--primary-color)' : '#999'};
+  }
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 `;
 
