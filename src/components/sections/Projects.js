@@ -3,6 +3,23 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaLinkedin, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
+// Helper function to get the correct image URL for GitHub Pages
+const getImageUrl = (imagePath) => {
+  const publicUrl = process.env.PUBLIC_URL || '';
+  if (!imagePath) return '';
+  
+  // Remove leading slash if present to avoid double slashes
+  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  // For GitHub Pages, ensure we have the correct base URL
+  if (publicUrl) {
+    return `${publicUrl}/${cleanPath}`;
+  }
+  
+  // Fallback for local development
+  return `/${cleanPath}`;
+};
+
 const Projects = ({ projectsData }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
@@ -165,10 +182,11 @@ const Projects = ({ projectsData }) => {
             <ProjectCard key={project.id}>
               <ProjectImg onClick={() => openProjectModal(project)}>
                 <img 
-                  src={`${process.env.PUBLIC_URL}${project.image}`} 
+                  src={getImageUrl(project.image)} 
                   alt={project.title}
                   onError={(e) => {
-                    e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                    console.log('Project image load error for:', getImageUrl(project.image));
+                    e.target.src = getImageUrl('images/project-placeholder.jpg');
                   }}
                 />
               </ProjectImg>
@@ -273,12 +291,13 @@ const Projects = ({ projectsData }) => {
                 <ModalTopRight>
                   {selectedProject.additionalImages && selectedProject.additionalImages.length > 0 ? (
                     <ImageCarousel>
-                      <CarouselImage onClick={() => setEnlargedImage(`${process.env.PUBLIC_URL}${selectedProject.additionalImages[currentImageIndex].url}`)}>
+                      <CarouselImage onClick={() => setEnlargedImage(getImageUrl(selectedProject.additionalImages[currentImageIndex].url))}>
                         <img 
-                          src={`${process.env.PUBLIC_URL}${selectedProject.additionalImages[currentImageIndex].url}`} 
+                          src={getImageUrl(selectedProject.additionalImages[currentImageIndex].url)} 
                           alt={selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`}
                           onError={(e) => {
-                            e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                            console.log('Modal image load error for:', getImageUrl(selectedProject.additionalImages[currentImageIndex].url));
+                            e.target.src = getImageUrl('images/project-placeholder.jpg');
                           }}
                         />
                       </CarouselImage>
@@ -311,10 +330,11 @@ const Projects = ({ projectsData }) => {
                   ) : (
                     <ImagePlaceholder>
                       <img 
-                        src={`${process.env.PUBLIC_URL}${selectedProject.image}`} 
+                        src={getImageUrl(selectedProject.image)} 
                         alt={selectedProject.title}
                         onError={(e) => {
-                          e.target.src = `${process.env.PUBLIC_URL}/images/project-placeholder.jpg`;
+                          console.log('Placeholder image load error for:', getImageUrl(selectedProject.image));
+                          e.target.src = getImageUrl('images/project-placeholder.jpg');
                         }}
                       />
                     </ImagePlaceholder>

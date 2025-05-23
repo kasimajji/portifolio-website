@@ -3,6 +3,23 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaEnvelope, FaCode, FaDownload } from 'react-icons/fa';
 
+// Helper function to get the correct image URL for GitHub Pages
+const getImageUrl = (imagePath) => {
+  const publicUrl = process.env.PUBLIC_URL || '';
+  if (!imagePath) return '';
+  
+  // Remove leading slash if present to avoid double slashes
+  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  // For GitHub Pages, ensure we have the correct base URL
+  if (publicUrl) {
+    return `${publicUrl}/${cleanPath}`;
+  }
+  
+  // Fallback for local development
+  return `/${cleanPath}`;
+};
+
 const Hero = ({ profileData }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -52,7 +69,7 @@ const Hero = ({ profileData }) => {
               <PrimaryButton href="#projects">
                 <FaCode /> View Projects
               </PrimaryButton>
-              <SecondaryButton href={`${process.env.PUBLIC_URL}${profileData?.resumeLink}`} target="_blank">
+              <SecondaryButton href={getImageUrl(profileData?.resumeLink)} target="_blank">
                 <FaDownload /> Download Resume
               </SecondaryButton>
             </CTAButtons>
@@ -74,10 +91,14 @@ const Hero = ({ profileData }) => {
             <ProfileGradient />
             <ProfileImageContainer>
               <ProfileImage 
-                src={`${process.env.PUBLIC_URL}${profileData?.profilePhoto}`} 
+                src={getImageUrl(profileData?.profilePhoto)} 
                 alt="Kasi Majji" 
                 onError={(e) => {
-                  e.target.src = `${process.env.PUBLIC_URL}/images/profile-placeholder.jpg`;
+                  console.log('Image load error for:', getImageUrl(profileData?.profilePhoto));
+                  e.target.src = getImageUrl('images/profile-placeholder.jpg');
+                }}
+                onLoad={() => {
+                  console.log('Image loaded successfully:', getImageUrl(profileData?.profilePhoto));
                 }}
               />
             </ProfileImageContainer>

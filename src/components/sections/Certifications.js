@@ -3,6 +3,23 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaExternalLinkAlt, FaTimes, FaCertificate } from 'react-icons/fa';
 
+// Helper function to get the correct image URL for GitHub Pages
+const getImageUrl = (imagePath) => {
+  const publicUrl = process.env.PUBLIC_URL || '';
+  if (!imagePath) return '';
+  
+  // Remove leading slash if present to avoid double slashes
+  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  // For GitHub Pages, ensure we have the correct base URL
+  if (publicUrl) {
+    return `${publicUrl}/${cleanPath}`;
+  }
+  
+  // Fallback for local development
+  return `/${cleanPath}`;
+};
+
 const Certifications = ({ certificationsData }) => {
   const certifications = certificationsData?.certifications || [];
   const [selectedCertificate, setSelectedCertificate] = useState(null);
@@ -70,10 +87,11 @@ const Certifications = ({ certificationsData }) => {
               <CertificationCard key={certification.id || index} onClick={() => openCertificateModal(certification)}>
                 <CertificateImage>
                   <img 
-                    src={`${process.env.PUBLIC_URL}${certification.image}`} 
+                    src={getImageUrl(certification.image)} 
                     alt={certification.title}
                     onError={(e) => {
-                      e.target.src = `${process.env.PUBLIC_URL}/images/certification-placeholder.jpg`;
+                      console.log('Certificate image load error for:', getImageUrl(certification.image));
+                      e.target.src = getImageUrl('images/certification-placeholder.jpg');
                     }}
                   />
                   <CertificateOverlay>
@@ -147,7 +165,7 @@ const Certifications = ({ certificationsData }) => {
                     </ErrorMessage>
                   ) : (
                     <ModalImage 
-                      src={`${process.env.PUBLIC_URL}${selectedCertificate.image}`} 
+                      src={getImageUrl(selectedCertificate.image)} 
                       alt={selectedCertificate.title}
                       onLoad={handleImageLoad}
                       onError={handleImageError}
