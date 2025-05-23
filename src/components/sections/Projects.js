@@ -464,6 +464,7 @@ const ProjectCard = styled.div`
   transition: var(--transition);
   border: 1px solid rgba(138, 43, 226, 0.1);
   position: relative;
+  min-height: 500px;
   
   &::before {
     content: '';
@@ -502,7 +503,7 @@ const ProjectImg = styled.div`
 `;
 
 const ProjectInfo = styled.div`
-  padding: 25px 25px 15px;
+  padding: 25px 25px 50px;
 `;
 
 const ProjectTitle = styled.h3`
@@ -985,6 +986,9 @@ const ProjectLinks = styled.div`
   justify-content: flex-end;
   gap: 12px;
   padding: 0 25px 15px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 `;
 
 const ProjectLink = styled.a`
