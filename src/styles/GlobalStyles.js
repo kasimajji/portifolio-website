@@ -39,8 +39,8 @@ const GlobalStyles = createGlobalStyle`
     --background-color: rgba(15, 10, 40, 0.95);
     --background-gradient: linear-gradient(to right, #0e1e4a, #2b0a3d);
     --backdrop-filter: blur(5px);
-    --section-bg: rgba(22, 18, 48, 0.7);
-    --card-bg: rgba(22, 18, 48, 0.8);
+    --section-bg: rgba(15, 10, 40, 0.95); /* Same as background-color for consistency */
+    --card-bg: rgba(15, 10, 40, 0.8); /* Same base color with transparency */
     --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     --nav-bg: rgba(15, 10, 40, 0.9);
     --nav-text: #f1f5f9;

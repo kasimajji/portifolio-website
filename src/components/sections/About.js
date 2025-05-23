@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaLaptopCode, FaUniversity, FaBuilding, FaGraduationCap } from 'react-icons/fa';
+import { FaGraduationCap, FaLaptopCode, FaUniversity, FaBuilding } from 'react-icons/fa';
 
 const About = ({ profileData }) => {
   // Function to highlight the first line and important words
@@ -182,8 +181,12 @@ const About = ({ profileData }) => {
 
 // Styled Components
 const AboutSection = styled.section`
-  padding: 60px 0 40px; /* Reduced padding to make it more compact */
+  padding: 80px 0 60px; /* Adjusted padding for fixed navbar */
   background-color: var(--section-bg);
+  
+  @media (max-width: 768px) {
+    padding: 60px 0 40px; /* Reduced padding on mobile */
+  }
 `;
 
 const SectionTitle = styled.h2`

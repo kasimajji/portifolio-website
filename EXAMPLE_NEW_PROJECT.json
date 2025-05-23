@@ -1,0 +1,18 @@
+{
+  "id": 8,
+  "title": "Stock Market Prediction Dashboard",
+  "description": "A real-time stock market prediction system using LSTM neural networks and technical indicators. Features interactive visualizations and automated trading signals.",
+  "image": "/images/Stock-Prediction/dashboard-thumbnail.png",
+  "tags": ["Deep Learning", "LSTM", "Python", "Streamlit", "yfinance", "TensorFlow"],
+  "category": "deep-learning",
+  "github": "https://github.com/kasimajji/stock-prediction-dashboard",
+  "demo": "https://stock-predictor-app.streamlit.app",
+  "linkedinPost": "https://linkedin.com/posts/kasi-majji/stock-prediction-project",
+  "youtubeVideo": null,
+  "fullDescription": "Built an end-to-end stock market prediction system using deep learning techniques.\n\nKey Features:\n• LSTM neural network for time series prediction\n• Real-time data fetching using yfinance API\n• Technical indicators (RSI, MACD, Bollinger Bands)\n• Interactive Streamlit dashboard with candlestick charts\n• Backtesting framework for strategy validation\n\nAchieved 85% directional accuracy on S&P 500 predictions with automated buy/sell signals. The system processes historical data, identifies patterns, and provides actionable insights for traders.",
+  "additionalImages": [
+    { "url": "/images/Stock-Prediction/model-architecture.png", "description": "LSTM model architecture diagram" },
+    { "url": "/images/Stock-Prediction/prediction-results.png", "description": "Prediction accuracy on test data" },
+    { "url": "/images/Stock-Prediction/technical-indicators.png", "description": "Technical indicators visualization" }
+  ]
+} 

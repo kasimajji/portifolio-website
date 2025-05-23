@@ -31,9 +31,6 @@ function App() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log('PUBLIC_URL:', process.env.PUBLIC_URL);
-        console.log('Base URL for images:', `${process.env.PUBLIC_URL}/images/`);
-        
         const [profileRes, projectsRes, certificationsRes, skillsRes] = await Promise.all([
           fetch(`${process.env.PUBLIC_URL}/data/profile.json`),
           fetch(`${process.env.PUBLIC_URL}/data/projects.json`),
@@ -47,9 +44,6 @@ function App() {
           certificationsRes.json(),
           skillsRes.json()
         ]);
-
-        console.log('Profile photo path:', profileData.profilePhoto);
-        console.log('Full profile photo URL:', `${process.env.PUBLIC_URL}${profileData.profilePhoto}`);
 
         setData({
           profileData,
@@ -105,7 +99,11 @@ function App() {
       <div className="App" data-theme={theme}>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <main>
-          <Hero profileData={data.profileData} />
+          <Hero 
+            profileData={data.profileData} 
+            projectsData={data.projectsData}
+            certificationsData={data.certificationsData}
+          />
           <About profileData={data.profileData} />
           <Skills skillsData={data.skillsData} />
           <Projects projectsData={data.projectsData} />

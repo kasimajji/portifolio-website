@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaExternalLinkAlt, FaTimes, FaCertificate } from 'react-icons/fa';
 
 // Helper function to get the correct image URL for GitHub Pages
 const getImageUrl = (imagePath) => {
-  const publicUrl = process.env.PUBLIC_URL || '';
   if (!imagePath) return '';
   
-  // Remove leading slash if present to avoid double slashes
-  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  // If the path is already a full URL (starts with http), return as is
+  if (imagePath.startsWith('http')) return imagePath;
   
-  // For GitHub Pages, ensure we have the correct base URL
-  if (publicUrl) {
-    return `${publicUrl}/${cleanPath}`;
+  // For GitHub Pages deployment, we need to handle the subdirectory correctly
+  if (process.env.NODE_ENV === 'production') {
+    // In production (GitHub Pages), use the homepage from package.json
+    const basePath = '/portifolio-website';
+    // Remove leading slash from imagePath to avoid double slashes
+    const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    return `${basePath}/${cleanPath}`;
+  } else {
+    // For local development, use the path as-is
+    return imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
   }
-  
-  // Fallback for local development
-  return `/${cleanPath}`;
 };
 
 const Certifications = ({ certificationsData }) => {
@@ -50,20 +53,20 @@ const Certifications = ({ certificationsData }) => {
   };
   
   // Handle keyboard events for modal accessibility
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape' && selectedCertificate) {
       closeCertificateModal();
     }
-  };
+  }, [selectedCertificate]);
 
   useEffect(() => {
     if (selectedCertificate) {
       document.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [selectedCertificate]);
+  }, [selectedCertificate, handleKeyDown]);
 
   const handleImageLoad = () => {
     setImageLoading(false);
@@ -200,9 +203,13 @@ const Certifications = ({ certificationsData }) => {
 
 // Styled Components
 const CertificationsSection = styled.section`
-  padding: 100px 0;
+  padding: 80px 0 60px;
   background-color: var(--section-bg, rgba(248, 250, 252, 0.7));
   min-height: 50vh;
+  
+  @media (max-width: 768px) {
+    padding: 60px 0 40px;
+  }
 `;
 
 const SectionTitle = styled.h2`

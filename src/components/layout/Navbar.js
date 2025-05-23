@@ -92,11 +92,14 @@ const NavbarContainer = styled.nav`
   top: 0;
   left: 0;
   width: 100%;
-  padding: ${props => props.$scrolled ? '15px 0' : '20px 0'};
-  background-color: var(--nav-bg);
-  z-index: 1000;
-  transition: padding 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: ${props => props.$scrolled ? '12px 0' : '20px 0'};
+  background-color: ${props => props.$scrolled ? 'rgba(15, 10, 40, 0.95)' : 'var(--nav-bg)'};
+  backdrop-filter: ${props => props.$scrolled ? 'blur(10px)' : 'blur(5px)'};
+  -webkit-backdrop-filter: ${props => props.$scrolled ? 'blur(10px)' : 'blur(5px)'};
+  z-index: 9999;
+  transition: all 0.3s ease;
+  box-shadow: ${props => props.$scrolled ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 2px 10px rgba(0, 0, 0, 0.1)'};
+  border-bottom: ${props => props.$scrolled ? '1px solid rgba(138, 43, 226, 0.2)' : 'none'};
 
   .container {
     display: flex;

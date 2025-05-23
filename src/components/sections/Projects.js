@@ -1,23 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaLinkedin, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 // Helper function to get the correct image URL for GitHub Pages
 const getImageUrl = (imagePath) => {
-  const publicUrl = process.env.PUBLIC_URL || '';
   if (!imagePath) return '';
   
-  // Remove leading slash if present to avoid double slashes
-  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  // If the path is already a full URL (starts with http), return as is
+  if (imagePath.startsWith('http')) return imagePath;
   
-  // For GitHub Pages, ensure we have the correct base URL
-  if (publicUrl) {
-    return `${publicUrl}/${cleanPath}`;
+  // For GitHub Pages deployment, we need to handle the subdirectory correctly
+  if (process.env.NODE_ENV === 'production') {
+    // In production (GitHub Pages), use the homepage from package.json
+    const basePath = '/portifolio-website';
+    // Remove leading slash from imagePath to avoid double slashes
+    const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    return `${basePath}/${cleanPath}`;
+  } else {
+    // For local development, use the path as-is
+    return imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
   }
-  
-  // Fallback for local development
-  return `/${cleanPath}`;
 };
 
 const Projects = ({ projectsData }) => {
@@ -26,7 +29,6 @@ const Projects = ({ projectsData }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [enlargedImage, setEnlargedImage] = useState(null);
   const projects = projectsData?.projects || [];
-  const categories = projectsData?.categories || [];
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -74,17 +76,17 @@ const Projects = ({ projectsData }) => {
   };
 
   // Handle click outside modal to close it
-  const handleClickOutside = (e) => {
+  const handleClickOutside = useCallback((e) => {
     // Don't close the project modal if we're interacting with the enlarged image modal
     if (enlargedImage) return;
     
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       closeProjectModal();
     }
-  };
+  }, [enlargedImage]);
   
   // Handle keyboard events for modal accessibility
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') {
       // If enlarged image is open, close it first
       if (enlargedImage) {
@@ -95,7 +97,7 @@ const Projects = ({ projectsData }) => {
         closeProjectModal();
       }
     }
-  };
+  }, [enlargedImage, selectedProject]);
 
   // Add event listeners for modal accessibility
   useEffect(() => {
@@ -126,7 +128,7 @@ const Projects = ({ projectsData }) => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'auto';
     };
-  }, [selectedProject, enlargedImage]);
+  }, [selectedProject, enlargedImage, handleClickOutside, handleKeyDown]);
 
   // Filter projects based on active filter
   const filteredProjects = activeFilter === 'all'
@@ -431,8 +433,12 @@ const Projects = ({ projectsData }) => {
 
 // Styled Components
 const ProjectsSection = styled.section`
-  padding: 40px 0;
+  padding: 80px 0 60px;
   background-color: var(--background-color);
+  
+  @media (max-width: 768px) {
+    padding: 60px 0 40px;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -668,11 +674,6 @@ const ModalCloseButton = styled.button`
   }
 `;
 
-const ModalHeader = styled.div`
-  padding: 20px 30px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-`;
-
 const ModalDescription = styled.p`
   color: var(--text-light);
   line-height: 1.7;
@@ -685,18 +686,6 @@ const ModalTags = styled.div`
   flex-wrap: wrap;
   gap: 5px;
   margin-bottom: 15px;
-`;
-
-const ModalSkillTag = styled.span`
-  display: inline-block;
-  background-color: #f0f0f0;
-  color: #333;
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  font-weight: 500;
 `;
 
 const ModalLinks = styled.div`

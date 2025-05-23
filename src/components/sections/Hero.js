@@ -1,31 +1,165 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useMemo } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { FaGithub, FaLinkedin, FaEnvelope, FaCode, FaDownload } from 'react-icons/fa';
 
 // Helper function to get the correct image URL for GitHub Pages
 const getImageUrl = (imagePath) => {
-  const publicUrl = process.env.PUBLIC_URL || '';
   if (!imagePath) return '';
   
-  // Remove leading slash if present to avoid double slashes
-  const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  // If the path is already a full URL (starts with http), return as is
+  if (imagePath.startsWith('http')) return imagePath;
   
-  // For GitHub Pages, ensure we have the correct base URL
-  if (publicUrl) {
-    return `${publicUrl}/${cleanPath}`;
+  // For GitHub Pages deployment, we need to handle the subdirectory correctly
+  if (process.env.NODE_ENV === 'production') {
+    // In production (GitHub Pages), use the homepage from package.json
+    const basePath = '/portifolio-website';
+    // Remove leading slash from imagePath to avoid double slashes
+    const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    return `${basePath}/${cleanPath}`;
+  } else {
+    // For local development, use the path as-is
+    return imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
   }
-  
-  // Fallback for local development
-  return `/${cleanPath}`;
 };
 
-const Hero = ({ profileData }) => {
-  const [isVisible, setIsVisible] = useState(false);
+const Hero = ({ profileData, projectsData, certificationsData }) => {
+  const [isTyping, setIsTyping] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [subtitleText, setSubtitleText] = useState('');
+  const [isSubtitleTyping, setIsSubtitleTyping] = useState(false);
+  const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [lastSection, setLastSection] = useState('home');
+  
+  const fullName = 'Kasi Majji';
+  const subtitles = useMemo(() => [
+    'A Data Scientist',
+    'A Machine Learning Engineer', 
+    'AI Architect with Global Mindset',
+    'An Indian Origin, U.S based Human'
+  ], []);
 
+  // Name typing animation effect
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    if (isTyping) {
+      setDisplayText('');
+      let currentIndex = 0;
+      
+      const typingInterval = setInterval(() => {
+        if (currentIndex <= fullName.length) {
+          setDisplayText(fullName.slice(0, currentIndex));
+          currentIndex++;
+        } else {
+          clearInterval(typingInterval);
+          setTimeout(() => {
+            setIsTyping(false);
+            setIsSubtitleTyping(true); // Start subtitle animation after name
+          }, 500);
+        }
+      }, 150);
+      
+      return () => clearInterval(typingInterval);
+    } else {
+      setDisplayText(fullName);
+    }
+  }, [isTyping, fullName]);
+
+  // Subtitle typing and backspacing animation
+  useEffect(() => {
+    if (isSubtitleTyping) {
+      const currentSubtitle = subtitles[currentSubtitleIndex];
+      let currentIndex = 0;
+      let isDeleting = false;
+      
+      const subtitleInterval = setInterval(() => {
+        if (!isDeleting) {
+          // Typing phase
+          if (currentIndex <= currentSubtitle.length) {
+            setSubtitleText(currentSubtitle.slice(0, currentIndex));
+            currentIndex++;
+          } else {
+            // Pause before starting to delete
+            setTimeout(() => {
+              isDeleting = true;
+            }, 1500); // Reduced from 2000ms to 1500ms
+          }
+        } else {
+          // Backspacing phase
+          if (currentIndex > 0) {
+            currentIndex--;
+            setSubtitleText(currentSubtitle.slice(0, currentIndex));
+          } else {
+            // Move to next subtitle
+            clearInterval(subtitleInterval);
+            setTimeout(() => {
+              setCurrentSubtitleIndex((prev) => (prev + 1) % subtitles.length);
+            }, 300); // Reduced from 500ms to 300ms
+          }
+        }
+      }, isDeleting ? 30 : 70); // Faster: was 50:100, now 30:70
+      
+      return () => clearInterval(subtitleInterval);
+    }
+  }, [isSubtitleTyping, currentSubtitleIndex, subtitles]);
+
+  // Scroll detection to trigger animation
+  useEffect(() => {
+    let animationTimeout;
+    
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'skills', 'projects', 'certifications', 'contact'];
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      
+      let currentSection = 'home';
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            currentSection = sectionId;
+            break;
+          }
+        }
+      }
+      
+      // Only trigger animation when coming FROM another section TO home
+      if (currentSection === 'home' && lastSection !== 'home' && !isTyping) {
+        clearTimeout(animationTimeout);
+        animationTimeout = setTimeout(() => {
+          setIsTyping(true);
+          setIsSubtitleTyping(false);
+          setSubtitleText('');
+          setCurrentSubtitleIndex(0);
+          setHasAnimated(true);
+        }, 300);
+      }
+      
+      setLastSection(currentSection);
+    };
+
+    // Trigger animation on initial load only
+    if (!hasAnimated) {
+      const initialAnimation = setTimeout(() => {
+        setIsTyping(true);
+        setHasAnimated(true);
+      }, 1200);
+      
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearTimeout(animationTimeout);
+        clearTimeout(initialAnimation);
+      };
+    } else {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearTimeout(animationTimeout);
+      };
+    }
+  }, [isTyping, hasAnimated, lastSection]);
 
   return (
     <HeroSection id="home">
@@ -33,9 +167,17 @@ const Hero = ({ profileData }) => {
         <HeroContent>
           <HeroText>
             <TypingContainer>
-              <NameHeading>Kasi Majji</NameHeading>
+              <NameHeading>
+                {displayText}
+                <TypingCursor $visible={isTyping}>|</TypingCursor>
+              </NameHeading>
             </TypingContainer>
-            <Subtitle>An Indian origin, U.S.-based Human</Subtitle>
+            <SubtitleContainer>
+              <Subtitle>
+                {subtitleText}
+                <SubtitleCursor $visible={isSubtitleTyping}>|</SubtitleCursor>
+              </Subtitle>
+            </SubtitleContainer>
             <Description>
               Transforming data into intelligent systems that drive business value
             </Description>
@@ -56,11 +198,11 @@ const Hero = ({ profileData }) => {
                 <StatLabel>Years Experience</StatLabel>
               </StatItem>
               <StatItem>
-                <StatNumber>7+</StatNumber>
+                <StatNumber>{projectsData?.projects?.length || 7}+</StatNumber>
                 <StatLabel>Projects</StatLabel>
               </StatItem>
               <StatItem>
-                <StatNumber>5+</StatNumber>
+                <StatNumber>{certificationsData?.certifications?.length || 5}+</StatNumber>
                 <StatLabel>Certifications</StatLabel>
               </StatItem>
             </HeroStats>
@@ -124,28 +266,66 @@ const BackgroundParticles = () => {
   );
 };
 
+// Keyframe animations
+const blink = keyframes`
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: var(--primary-color);
+  }
+`;
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 // Styled Components
 const HeroSection = styled.section`
-  padding: 0;
+  padding: 100px 0 40px 0; /* Added top padding to account for fixed navbar */
   background-color: var(--background-color);
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px); /* Adjust for navbar height */
   display: flex;
   align-items: center;
+  
+  @media (max-width: 992px) {
+    padding: 120px 0 60px 0; /* More padding on mobile */
+    min-height: calc(100vh - 80px);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 140px 0 80px 0; /* Even more padding on smaller screens */
+    min-height: calc(100vh - 100px);
+  }
 `;
 
 const HeroContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 40px;
   position: relative;
   z-index: 1;
   
   @media (max-width: 992px) {
     flex-direction: column-reverse;
     text-align: center;
+    gap: 30px;
+    justify-content: center;
+  }
+  
+  @media (max-width: 768px) {
+    gap: 20px;
+    padding: 0 20px;
   }
 `;
 
@@ -165,10 +345,10 @@ const TypingContainer = styled.div`
 
 const NameHeading = styled.h1`
   font-family: 'Dancing Script', cursive;
-  font-size: 3.2rem;
+  font-size: 4.2rem;
   font-weight: 700;
   margin-bottom: 10px;
-  line-height: 1.1;
+  line-height: 1.2;
   background: var(--name-gradient);
   -webkit-background-clip: text;
   background-clip: text;
@@ -176,15 +356,61 @@ const NameHeading = styled.h1`
   display: inline-block;
   text-transform: none;
   letter-spacing: normal;
+  font-style: normal;
+  animation: ${fadeInUp} 0.8s ease-out;
+  text-shadow: 0 2px 8px rgba(138, 43, 226, 0.15);
+  transform: translateZ(0);
+  
+  @media (max-width: 992px) {
+    font-size: 3.8rem;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 3.3rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2.8rem;
+  }
+`;
+
+const TypingCursor = styled.span`
+  visibility: ${(props) => (props.$visible ? 'visible' : 'hidden')};
+  animation: ${blink} 0.7s step-end infinite;
+  color: var(--primary-color);
+  font-weight: 300;
+  margin-left: 2px;
+`;
+
+const SubtitleContainer = styled.div`
+  position: relative;
+  margin-bottom: 10px;
 `;
 
 const Subtitle = styled.h2`
   font-family: 'Poppins', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-light);
   margin-bottom: 15px;
   line-height: 1.2;
+  min-height: 1.5rem; /* Prevent layout shift */
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+`;
+
+const SubtitleCursor = styled.span`
+  visibility: ${(props) => (props.$visible ? 'visible' : 'hidden')};
+  animation: ${blink} 0.7s step-end infinite;
+  color: var(--primary-color);
+  font-weight: 300;
+  margin-left: 2px;
 `;
 
 const Description = styled.p`
@@ -224,15 +450,22 @@ const HeroStats = styled.div`
   display: flex;
   gap: 25px;
   margin-bottom: 20px;
+  justify-content: flex-start;
   
   @media (max-width: 992px) {
     justify-content: center;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 20px;
   }
 `;
 
 const StatItem = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
 `;
 
 const StatNumber = styled.span`

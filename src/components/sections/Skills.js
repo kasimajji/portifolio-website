@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 
 const Skills = ({ skillsData }) => {
   const skills = skillsData?.Skills?.[0] || {};
   
+  // Debug logging
+  console.log('Skills data:', skillsData);
+  console.log('Processed skills:', skills);
+  
   return (
     <SkillsSection id="skills">
-      <div className="container">
+      <Container>
         <SectionTitle>Skills</SectionTitle>
         
         <SkillsContent>
@@ -26,15 +29,30 @@ const Skills = ({ skillsData }) => {
             </SkillCategoryRow>
           ))}
         </SkillsContent>
-      </div>
+      </Container>
     </SkillsSection>
   );
 };
 
 // Styled Components
+const Container = styled.div`
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  
+  @media (max-width: 768px) {
+    padding: 0 15px;
+  }
+`;
+
 const SkillsSection = styled.section`
-  padding: 40px 0;
+  padding: 100px 0 80px;
   background-color: var(--section-bg);
+  
+  @media (max-width: 768px) {
+    padding: 80px 0 60px;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -70,23 +88,27 @@ const SkillsContent = styled.div`
 const SkillCategoryRow = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 5px;
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 15px;
   }
 `;
 
 const CategoryHeading = styled.div`
   display: flex;
   align-items: center;
-  width: 180px;
-  min-width: 180px;
+  width: 200px;
+  min-width: 200px;
   
   @media (max-width: 768px) {
     width: 100%;
     min-width: 100%;
+    margin-bottom: 5px;
   }
 `;
 
@@ -102,7 +124,8 @@ const CategoryName = styled.h3`
 const VerticalLine = styled.div`
   flex-grow: 1;
   height: 1px;
-  background-color: #e0e0e0;
+  background-color: var(--text-light);
+  opacity: 0.3;
 `;
 
 const SkillPills = styled.div`
@@ -113,20 +136,23 @@ const SkillPills = styled.div`
 `;
 
 const SkillPill = styled.div`
-  background-color: #f8f9fa;
+  background-color: var(--card-bg);
   color: var(--text-color);
-  padding: 6px 12px;
-  border-radius: 15px;
-  font-size: 0.8rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: 500;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(138, 43, 226, 0.1);
+  transition: all 0.3s ease;
+  white-space: nowrap;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     background-color: var(--primary-color);
     color: white;
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+    border-color: var(--primary-color);
   }
 `;
 

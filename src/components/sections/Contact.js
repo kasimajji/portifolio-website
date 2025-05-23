@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaEnvelope, FaLinkedin, FaGithub } from 'react-icons/fa';
 
 const Contact = ({ contactData }) => {
   return (
@@ -51,8 +50,12 @@ const Contact = ({ contactData }) => {
 
 // Styled Components
 const ContactSection = styled.section`
-  padding: 60px 0 40px 0;
+  padding: 80px 0 60px;
   background-color: var(--background-color);
+  
+  @media (max-width: 768px) {
+    padding: 60px 0 40px;
+  }
 `;
 
 const SectionTitle = styled.h2`
