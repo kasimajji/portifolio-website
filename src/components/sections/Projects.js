@@ -449,8 +449,8 @@ const ProjectModal = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -472,7 +472,6 @@ const ModalOverlay = styled(motion.div)`
 `;
 
 const ModalContent = styled(motion.div)`
-  position: relative;
   width: 90%;
   max-width: 900px;
   max-height: 85vh;
@@ -485,6 +484,7 @@ const ModalContent = styled(motion.div)`
   padding: 0; /* Remove default padding */
   display: flex;
   flex-direction: column;
+  margin: auto; /* This is crucial for flexbox centering */
   
   /* Ensure modal is not cut off on smaller screens */
   @media (max-height: 700px) {
