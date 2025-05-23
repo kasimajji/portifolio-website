@@ -1,0 +1,12 @@
+{
+  "Skills": [
+    {
+      "MACHINE LEARNING & AI": ["Statistical ML", "Deep Learning", "NLP", "Computer Vision", "Generative AI"],
+      "DATA ENGINEERING": ["ETL Pipelines", "Data Warehousing", "Streaming Data", "Data Modeling", "Data Quality"],
+      "PROGRAMMING": ["Python", "SQL", "R", "JavaScript", "Scala"],
+      "CLOUD & DEVOPS": ["AWS", "Docker", "CI/CD", "Kubernetes", "MLOps"],
+      "DATA VISUALIZATION": ["Tableau", "Power BI", "D3.js", "Matplotlib/Seaborn", "Plotly"],
+      "DATABASES": ["PostgreSQL", "MongoDB", "Snowflake", "Redis", "Elasticsearch"]
+    }
+  ]
+}

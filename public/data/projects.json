@@ -1,0 +1,139 @@
+{
+  "categories": [
+    { "id": "all", "name": "All Projects" },
+    { "id": "machine-learning", "name": "Machine Learning" },
+    { "id": "deep-learning", "name": "Deep Learning" },
+    { "id": "nlp", "name": "Natural Language Processing" },
+    { "id": "data-visualization", "name": "Data Visualization" },
+    { "id": "gen-ai", "name": "General AI" }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "Truck-Delay-Classification---End-to-End-ML-Pipeline",
+      "description": "Domain/Function: logistics.\n An end-to-end machine learning pipeline to predict truck shipment delays using real-world logistics data. Built with scalable architecture, automated training workflows, and continuous performance monitoring.",
+      "image": "/images/Truck Classification/truckclassification .png",
+      "tags": ["Machine Learning", "Python", "Scikit-learn", "Pandas", "Numpy", "Weights and Baises", "Hopswork", "Evidently AI", "Streamlit"],
+      "category": "machine-learning",
+      "github": "https://github.com/kasimajji/Truck-Delay-Classification---End-to-End-ML-Pipeline",
+      "demo": null,
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "In the logistics industry, unanticipated truck delays lead to increased costs and customer dissatisfaction. This project presents a robust ML solution to classify and predict such delays based on route, schedule, weather, and traffic data. \n I designed and implemented a complete ML lifecycle—from data ingestion to model deployment—using tools like Python, scikit-learn, MLflow, and AWS SageMaker. Feature management was streamlined using Hopsworks, and models were continuously evaluated and retrained via automated pipelines. This solution empowers logistics teams to take proactive action, optimize deliveries, and minimize operational disruptions.",
+      "additionalImages": [
+        { "url": "/images/Truck Classification/archImagepng.png", "description": "System architecture diagram showing data flow" },
+        { "url": "/images/Truck Classification/Projectstructure.png", "description": "Project structure" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Flower-Classification-RestNet",
+      "description": "A deep learning application that classifies flower images into five categories (daisy, dandelion, rose, sunflower, and tulip) using transfer learning with ResNet50 architecture.",
+      "image": "/images/Flower Classification/Flower Classification.png",
+      "tags": ["ResNet50", "Python", "PyTorch","Ml Flow", "Streamlit"],
+      "category": "deep-learning",
+      "github": "https://github.com/kasimajji/Flower-Classification-RestNet",
+      "demo": "#",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "This project implements a deep learning model to classify images of flowers into distinct categories using a ResNet (Residual Network) architecture. It leverages transfer learning with pre-trained ResNet weights to improve accuracy and reduce training time. The workflow includes data preprocessing, model training, validation, and evaluation on a labeled flower dataset.\n\nKey Highlights:\n                            \nUsed ResNet18 for efficient and accurate image classification.\nApplied PyTorch for model training and handling image datasets.\nAchieved high classification accuracy through transfer learning.\nIncludes visualization of model predictions and performance metrics.",
+      "additionalImages": [
+        { "url": "/images/Flower Classification/UI.png", "description": "StreamLit Ui" },
+        { "url": "/images/Flower Classification/output.png", "description": "Model Evalution against test data" },
+        { "url": "/images/Flower Classification/training_plot.png", "description": "Training plot" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Restaurant-Review-Sentiment-Analysis",
+      "description": "A comprehensive sentiment analysis system for restaurant reviews with MLflow integration and a Streamlit web interface. This project demonstrates a complete machine learning pipeline from data preprocessing to model deployment.",
+      "image": "/images/Restaurant Review/Tumbnail.png",
+      "tags": ["NLP", "Machine Learning", "Python", "SVM", "Streamlit", "MLflow"],
+      "category": "nlp",
+      "github": "https://github.com/kasimajji/Restaurant-Review-Sentiment-Analysis",
+      "demo": "#",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "NLP | Machine Learning | SVM\n\nBuilt an end-to-end NLP pipeline to classify restaurant reviews into positive or negative sentiment using an LSTM-based deep learning model.\n\nPreprocessed text (cleaning, tokenization, padding) and trained a binary classifier using word embeddings.\nAchieved 90%+ accuracy, visualized model performance, and validated predictions.\nIdeal for applications in customer feedback systems and automated review monitoring.",
+      "additionalImages": [
+        { "url": "/images/Restaurant Review/MLFlow.png", "description": "MLFlow tracking UI" },
+        { "url": "/images/Restaurant Review/model_comparison.png", "description": "Model comparison metrics" },
+        { "url": "/images/Restaurant Review/Positive.png", "description": "Positive sentiment example" },
+        { "url": "/images/Restaurant Review/Negative.png", "description": "Negative sentiment example" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Customer-Segmentation-Using-K-means-Clustering",
+      "description": "Customer segmentation on an online retail dataset using K-means clustering. By analyzing customer behavior through RFM (Recency, Frequency, Monetary Value) analysis, the project identifies distinct customer segments that can be targeted with specific marketing strategies. \nThe analysis helps businesses understand their customer base better and develop targeted marketing approaches for different customer segments, ultimately improving customer retention and maximizing revenue.",
+      "image": "/images/Customer Segmentation/Customer_Tumbnail.png",
+      "tags": ["Time Series", "Python", "Power BI", "Forecasting"],
+      "category": "machine-learning",
+      "github": "https://github.com/kasimajji/Exploring-Customer-Segmentation-Using-K-means-Clustering",
+      "demo": "#",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "Customer Segmentation with K-Means Clustering\n\nApplied unsupervised learning to segment customers based on purchasing behavior using K-Means Clustering.\nPreprocessed customer data and explored optimal clusters using the Elbow Method.\nVisualized clusters to uncover actionable patterns in spending, frequency, and recency.\nEnabled targeted marketing by identifying distinct customer groups.",
+      "additionalImages": [
+        { "url": "/images/Customer Segmentation/Arch.png", "description": "Project architecture diagram" },
+        { "url": "/images/Customer Segmentation/3d_cluster.png", "description": "3D visualization of customer clusters" },
+        { "url": "/images/Customer Segmentation/avg distribution.png", "description": "Average distribution across clusters" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Text-SQl-LLM",
+      "description": "In this LLM project,building a user-friendly web application that leverages Large Language Models (LLMs) to convert natural language queries into optimized SQL commands.",
+      "image": "/images/SQlllm/SQl-LLM-Tumbnail.png",
+      "tags": ["Generative Ai", "Python","SQL","Streamlit", "OpenAI"],
+      "category": "gen-ai",
+      "github": "https://github.com/kasimajji/Text-SQl-LLM",
+      "demo": "#",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "Natural Language to SQL – Powered by GPT-4 and Streamlit\n\nThis project simplifies data access by converting plain English into SQL queries using OpenAI's GPT-4. Built with Streamlit, the app connects to Databricks and Snowflake, enabling non-technical users to query complex databases effortlessly.\n\nKey Highlights:\n\nConverts natural language into optimized SQL using LLMs\nSecure login with session-based user authentication\nIntegrated with Databricks for live query execution\nFeatures ERD generation, prompt chaining, and error handling\nDeployable on AWS EC2 with HTTPS\nTech Stack: Python, Streamlit, OpenAI GPT-4, LangChain, Databricks, Snowflake, Azure, AWS\n\nThis tool democratizes data access, boosts productivity, and empowers decision-makers by eliminating the need to write SQL manually.",
+      "additionalImages": [
+        { "url": "/images/SQlllm/Arch_daigram.png", "description": "System architecture diagram" },
+        { "url": "/images/SQlllm/Ui.png", "description": "User interface screenshot" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Insurance_Price_Estimator",
+      "description": "This machine learning application predicts health insurance premiums based on personal and health-related factors. The project uses regression models to estimate annual premium amounts based on features such as age, gender, BMI, smoking status, medical history, and more.",
+      "image": "/images/Insurance/Insurance_Tumbnail.png",
+      "tags": ["Machine Learning", "Python", "Pandas", "Numpy", "Scikit-learn","Xg Boost", "Streamlit", "MLflow"],
+      "category": "machine-learning",
+      "github": "https://github.com/kasimajji/ML_Insurance_Price_Estimator",
+      "demo": "https://insurance-price-estimator-by-kasimajji.streamlit.app",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "Predicting accurate insurance premiums using machine learning\n\nThis project demonstrates the development of an end-to-end machine learning model to estimate insurance costs based on user data such as age, BMI, smoking status, and region. The goal is to help insurers and users alike by predicting fair insurance premiums efficiently and transparently.\n\n🔍 What It Does\n\nIngests and preprocesses real-world insurance data\nTrains and evaluates multiple regression models (Linear Regression, Random Forest, XGBoost)\nCompares model performance using MAE, MSE, and R² metrics\nDeploys the best model with an interactive user interface using Streamlit\n\n⚙️ Key Features\n\nFeature Engineering: Encodes categorical features and scales numerical ones\nModel Tuning: Uses GridSearchCV for optimal hyperparameters\nVisualization: Includes exploratory data analysis for insights\nDeployment Ready: Streamlit app for real-time insurance quote predictions\n\n🧰 Tech Stack\nPython, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit",
+      "additionalImages": [
+        { "url": "/images/Insurance/1.png", "description": "Stream Lit ui for app" },
+        { "url": "/images/Insurance/correlation_matrix.png", "description": "Feature correlation matrix" },
+        { "url": "/images/Insurance/Risk Comparison.png", "description": "Risk factor comparison" },
+        { "url": "/images/Insurance/truevspredicted for Rest of age group.png", "description": "True vs predicted values" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Credit_Risk_Analyser",
+      "description": "Credit Risk Analyzer is a machine learning-powered application designed to predict the probability of loan default based on customer information, loan details, and credit history. The model helps financial institutions make data-driven decisions when approving loans, setting interest rates, and managing risk.",
+      "image": "/images/Credit Risk Analyser/Risk.png",
+      "tags": ["Machine Learning", "Python", "Scikit-learn", "Pandas", "Numpy", "Ml Flow", "XG Boost","Logistic Regression","Random Forest","Streamlit"],
+      "category": "machine-learning",
+      "github": "https://github.com/kasimajji/ML_Credit_Risk_Analyser",
+      "demo": "https://ml-credit-risk-analyser-kasimajji.streamlit.app",
+      "linkedinPost": null,
+      "youtubeVideo": null,
+      "fullDescription": "This project demonstrates the complete machine learning lifecycle:\n\nData preprocessing and feature engineering\nModel training and evaluation\nDeployment as an interactive web application\n\nThe final product is a user-friendly tool that provides instant risk assessment, credit scoring, and actionable insights for loan applications.\n\nThe credit risk prediction system uses a Logistic Regression model with the following characteristics:\n\nAlgorithm: Logistic Regression with L2 regularization (C=1.0)\nFeatures: 19 financial and demographic variables (after preprocessing)\n\nFeature Engineering:\nOne-hot encoding for categorical variables\nFeature scaling using MinMaxScaler\nCreation of interaction features (e.g., loan_to_income ratio)\n\nPerformance:\nAccuracy: 92.4%\nPrecision: 54.2%\nRecall: 93.5%\nF1-Score: 82.4%\nROC AUC: 0.91",
+      "additionalImages": [
+        { "url": "/images/Credit Risk Analyser/1_1.png", "description": "StreamLit Ui to use app" },
+        { "url": "/images/Credit Risk Analyser/features_risk_score.png", "description": "Feature importance usinh Logistic regression" },
+        { "url": "/images/Credit Risk Analyser/ROCAUC_curve.png", "description": "Roc Curve for model perfomance" }
+      ]
+    }
+  ]
+}
+

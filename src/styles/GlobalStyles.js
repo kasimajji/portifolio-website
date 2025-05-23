@@ -94,6 +94,29 @@ const GlobalStyles = createGlobalStyle`
     flex: 1;
   }
 
+  /* Loading Screen */
+  .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--background-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(138, 43, 226, 0.1);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -159,6 +182,11 @@ const GlobalStyles = createGlobalStyle`
   }
 
   @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
