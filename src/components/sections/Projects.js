@@ -164,12 +164,13 @@ const Projects = ({ projectsData }) => {
         {/* Project Modal */}
         <AnimatePresence>
           {selectedProject && (
-            <ProjectModal onClick={closeProjectModal}>
+            <ProjectModal>
               <ModalOverlay 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
+                onClick={closeProjectModal}
               />
               <ModalContent
                 ref={modalRef}
@@ -178,6 +179,7 @@ const Projects = ({ projectsData }) => {
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 tabIndex={-1}
+                onClick={(e) => e.stopPropagation()}
               >
               <ModalCloseButton onClick={closeProjectModal}>
                 <FaTimes />
@@ -190,7 +192,6 @@ const Projects = ({ projectsData }) => {
                   <ModalTitle>{selectedProject.title}</ModalTitle>
                   <ModalShortDescription>{selectedProject.description}</ModalShortDescription>
                   
-                  <ModalSectionTitle>Skills & Technologies</ModalSectionTitle>
                   <ModalTags>
                     {selectedProject.tags.map((tag, index) => (
                       <ModalTag key={index}>{tag}</ModalTag>
@@ -428,10 +429,13 @@ const ProjectDescription = styled.p`
 `;
 
 const ModalTitle = styled.h3`
-  font-size: 2rem;
-  margin-bottom: 15px;
-  color: var(--text-color);
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  color: var(--primary-color);
   font-weight: 600;
+  background: var(--gradient-bg);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const ProjectCategory = styled.span`
@@ -465,26 +469,28 @@ const ModalOverlay = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   pointer-events: auto; /* Capture clicks */
   z-index: 1000;
 `;
 
 const ModalContent = styled(motion.div)`
-  width: 90%;
-  max-width: 900px;
-  max-height: 85vh;
+  width: 95%;
+  max-width: 1100px;
+  max-height: 90vh;
   overflow-y: auto;
   z-index: 1001;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.75);
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   pointer-events: auto; /* Capture clicks */
   padding: 0; /* Remove default padding */
   display: flex;
   flex-direction: column;
   margin: auto; /* This is crucial for flexbox centering */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   
   /* Ensure modal is not cut off on smaller screens */
   @media (max-height: 700px) {
@@ -548,7 +554,8 @@ const ModalDescription = styled.p`
 const ModalTags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 5px;
+  margin-bottom: 15px;
 `;
 
 const ModalSkillTag = styled.span`
@@ -565,8 +572,8 @@ const ModalSkillTag = styled.span`
 
 const ModalLinks = styled.div`
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  gap: 10px;
+  margin-top: 20px;
   
   @media (max-width: 480px) {
     flex-direction: column;
@@ -577,19 +584,19 @@ const ModalLink = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 12px 25px;
+  gap: 8px;
+  padding: 8px 16px;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: var(--transition);
   background-color: ${props => props.href?.includes('github') ? '#333' : 'var(--primary-color)'};
   color: white;
   text-decoration: none;
   
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(138, 43, 226, 0.3);
   }
   
   &:nth-child(2) {
@@ -597,28 +604,33 @@ const ModalLink = styled.a`
     color: var(--text-color);
     
     &:hover {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
   }
 `;
 
 const ModalTag = styled.span`
-  font-size: 0.8rem;
-  color: var(--text-color);
-  background-color: var(--light-color);
-  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: white;
+  background-color: ${props => {
+    const colors = ['#8a2be2', '#00bfff', '#ff69b4', '#32cd32', '#ffa500', '#9370db'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }};
+  padding: 4px 10px;
   border-radius: 20px;
   font-weight: 500;
+  margin: 2px;
   
   &:hover {
-    background-color: #e0e0e0;
+    opacity: 0.85;
+    transform: translateY(-2px);
   }
 `;
 
 const ModalSectionTitle = styled.h4`
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  color: var(--text-color);
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--primary-color);
   font-weight: 600;
 `;
 
