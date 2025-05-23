@@ -88,18 +88,21 @@ const Navbar = ({ theme, toggleTheme }) => {
 
 // Styled Components
 const NavbarContainer = styled.nav`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  /* Always keep navbar fixed and on top */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
   padding: ${props => props.$scrolled ? '12px 0' : '20px 0'};
   background-color: ${props => props.$scrolled ? 'rgba(15, 10, 40, 0.95)' : 'var(--nav-bg)'};
   backdrop-filter: ${props => props.$scrolled ? 'blur(10px)' : 'blur(5px)'};
   -webkit-backdrop-filter: ${props => props.$scrolled ? 'blur(10px)' : 'blur(5px)'};
-  z-index: 9999;
   transition: all 0.3s ease;
   box-shadow: ${props => props.$scrolled ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 2px 10px rgba(0, 0, 0, 0.1)'};
   border-bottom: ${props => props.$scrolled ? '1px solid rgba(138, 43, 226, 0.2)' : 'none'};
+  will-change: transform, background-color, box-shadow;
 
   .container {
     display: flex;
