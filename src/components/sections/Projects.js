@@ -7,6 +7,7 @@ const Projects = ({ projectsData }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [enlargedImage, setEnlargedImage] = useState(null);
   const projects = projectsData?.projects || [];
   const categories = projectsData?.categories || [];
   const modalRef = useRef(null);
@@ -221,7 +222,7 @@ const Projects = ({ projectsData }) => {
                 <ModalTopRight>
                   {selectedProject.additionalImages && selectedProject.additionalImages.length > 0 ? (
                     <ImageCarousel>
-                      <CarouselImage>
+                      <CarouselImage onClick={() => setEnlargedImage(selectedProject.additionalImages[currentImageIndex].url)}>
                         <img 
                           src={selectedProject.additionalImages[currentImageIndex].url} 
                           alt={selectedProject.additionalImages[currentImageIndex].description || `Screenshot ${currentImageIndex + 1}`} 
@@ -294,6 +295,33 @@ const Projects = ({ projectsData }) => {
               </ModalBottomSection>
               </ModalContent>
             </ProjectModal>
+          )}
+        </AnimatePresence>
+        
+        {/* Enlarged Image Modal */}
+        <AnimatePresence>
+          {enlargedImage && (
+            <EnlargedImageModal onClick={() => setEnlargedImage(null)}>
+              <ModalOverlay 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setEnlargedImage(null)}
+              />
+              <EnlargedImageContainer
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img src={enlargedImage} alt="Enlarged view" />
+                <CloseEnlargedButton onClick={() => setEnlargedImage(null)}>
+                  <FaTimes />
+                </CloseEnlargedButton>
+              </EnlargedImageContainer>
+            </EnlargedImageModal>
           )}
         </AnimatePresence>
       </div>
@@ -611,19 +639,16 @@ const ModalLink = styled.a`
 
 const ModalTag = styled.span`
   font-size: 0.75rem;
-  color: white;
-  background-color: ${props => {
-    const colors = ['#8a2be2', '#00bfff', '#ff69b4', '#32cd32', '#ffa500', '#9370db'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }};
+  color: var(--primary-color);
+  background-color: rgba(138, 43, 226, 0.1);
   padding: 4px 10px;
   border-radius: 20px;
   font-weight: 500;
   margin: 2px;
   
   &:hover {
-    opacity: 0.85;
-    transform: translateY(-2px);
+    background-color: rgba(138, 43, 226, 0.15);
+    transform: translateY(-1px);
   }
 `;
 
@@ -722,76 +747,101 @@ const ImageCarousel = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 `;
 
 const CarouselImage = styled.div`
   width: 100%;
   height: 300px;
   overflow: hidden;
+  position: relative;
+  cursor: zoom-in;
   
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover img {
+    transform: scale(1.03);
   }
 `;
 
 const CarouselNavigation = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 15px;
-  background-color: #f9f9f9;
+  padding: 0 15px;
+  pointer-events: none;
 `;
 
 const CarouselButton = styled.button`
-  background-color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: var(--transition);
+  pointer-events: auto;
+  z-index: 5;
   
   &:hover {
+    background-color: rgba(138, 43, 226, 0.8);
     transform: scale(1.1);
   }
 `;
 
 const CarouselCaption = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   font-size: 0.9rem;
-  color: var(--text-light);
+  color: white;
   text-align: center;
-  flex-grow: 1;
-  padding: 0 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
 `;
 
 const CarouselIndicators = styled.div`
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  background-color: #f9f9f9;
-  position: relative;
+  z-index: 5;
 `;
 
 const CarouselIndicator = styled.button`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${props => props.active ? 'var(--primary-color)' : '#ccc'};
+  background-color: ${props => props.active ? 'var(--primary-color)' : 'rgba(255, 255, 255, 0.7)'};
   border: none;
   padding: 0;
   cursor: pointer;
   transition: var(--transition);
+  pointer-events: auto;
   
   &:hover {
-    background-color: ${props => props.active ? 'var(--primary-color)' : '#999'};
+    background-color: ${props => props.active ? 'var(--primary-color)' : 'rgba(255, 255, 255, 0.9)'};
   }
 `;
 
@@ -805,6 +855,60 @@ const ImagePlaceholder = styled.div`
     width: 100%;
     height: auto;
     display: block;
+  }
+`;
+
+// Enlarged Image Modal Components
+const EnlargedImageModal = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`;
+
+const EnlargedImageContainer = styled(motion.div)`
+  position: relative;
+  max-width: 90%;
+  max-height: 90vh;
+  z-index: 2001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const CloseEnlargedButton = styled.button`
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--primary-color);
   }
 `;
 
